@@ -1,4 +1,5 @@
-#import Game
+#Gomez, Brian Agustin
+#Di Maria, Juan Martin
 import sys
 import PySimpleGUI as sg
 from pattern.web import Wiktionary
