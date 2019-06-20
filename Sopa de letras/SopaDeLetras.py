@@ -29,7 +29,7 @@ def meterPalabraHorizontalmente(palabra,matriz,n,listaPalabras):
     ok=False #El ok determina si la palabra fue escrita en la sopa de letras
     x=random.randrange(n)
     y=random.randrange(n)
-    cont=0 #indica las veces que se quiere agregar la palabra a la sopa de letras
+    cont=0
     while True: #Tratará de ingresar la palabra sin que se "choque" con otra
         while True: #si la longitud de la palabra + el random "y" superan la altura de la matriz se volverá a seleccionar otro numero random hasta que la palabra entre
             lon=len(palabra)
@@ -105,12 +105,14 @@ def meterPalabraVerticalmente(palabra,matriz,n,listaPalabras):
     return matriz
 
 #Crea el grafico
-def comenzar(matriz, n, palabra, listaPalabras):
+def comenzar(matriz, n, palabraSel, listaPal, ori):
     BOX_SIZE = 20 #tamaño de cada caja que contiene cada letra
 
     layout = [
     [sg.Text('SOPA DE LETRAS by PySimpleGUI', font=(15))],
-    [sg.Graph((n*30, n*30), (0, n*22.5), (n*22.5, 0), key='Graph', change_submits=True, drag_submits=False), sg.Listbox(values=listaPalabras, size=(n+3, n+6))],
+    [sg.Graph((n*30, n*30), (0, n*22.5), (n*22.5, 0), key='Graph', change_submits=True, drag_submits=False)],
+    [sg.Text('Sustantivos', font=(10)), sg.Text('  Adjetivos', font=(10)), sg.Text('   verbos', font=(10))],
+    [sg.Listbox(values=listaPalabras[0][0], size=(n+1, n)), sg.Listbox(values=listaPalabras[0][1], size=(n+1, n)), sg.Listbox(values=listaPalabras[0][2], size=(n+1, n))],
     [sg.Button('Buscar Palabra'), sg.Button('Ayuda'), sg.Button('Exit')]
     ]
 
@@ -133,31 +135,73 @@ def comenzar(matriz, n, palabra, listaPalabras):
             if mouse == (None, None):
                 continue
             y = mouse[0]//BOX_SIZE
-            x = mouse[1]//BOX_SIZE
+            x = mouse[1]//BOX_SIZE           
             try:    
-                palabra.append(matriz[y][x])
-                g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color='blue') #La letra elegida obtiene un contorno azul
-            except(IndexError): #se clickea fuera de la sopa de letras
-                print('fuera de rango')              
-
+                palabraSel.append(matriz[y][x])
+                g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color='black') #La letra elegida obtiene un contorno azul
+            except(IndexError): #se clickeo fuera de la sopa de letras
+                g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color='none')  
+                print('fuera de rango')
+               
         if event == 'Buscar Palabra':
+            auxX=x
+            auxY=y
+
             aux=""
-            ok=False
+            ok=False #si ok es falso, la palabra no existe
 
-            for element in palabra: # aux se queda con la palabra seleccionada
+            for element in palabraSel: # aux se queda con la palabra seleccionada
                 aux=aux+element
+            
+            for k in range(len(listaPal)): # recorre la lista de palabras (sus, adj, ver) para ver si se encuentra la palabra encontrada    
+                for p in listaPal[k]:              
+                    if aux == p.upper():    
+                        sg.Popup("encontraste la palabra: "+aux)
+                        if k==0: # la palabra encontrada es sustantivo
+                            if ori == True: # es horizontal
+                                for x in range(len(aux)):
+                                    g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color='yellow') 
+                                    auxY-=1
+                            else: # es vertical
+                                for x in range(len(aux)): 
+                                    g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color='yellow')
+                                    auxX-=1
+                        elif k==1: # la palabra encontrada es adjetivo
+                            if ori == True: # es horizontal
+                                for x in range(len(aux)):
+                                    g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color='red') 
+                                    auxY-=1
+                            else: # es vertical
+                                for x in range(len(aux)): 
+                                    g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color='red')
+                                    auxX-=1 
+                        else: # la palabra encontrada es verbo
+                            if ori == True: # es horizontal
+                                for x in range(len(aux)):
+                                    g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color='green') 
+                                    auxY-=1
+                            else: # es vertical
+                                for x in range(len(aux)): 
+                                    g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color='green')
+                                    auxX-=1                      
+                        ok=True
 
-            for p in listaPalabras: # recorre las listas de palabras a buscar para ver si se encuentra la palabra encontrada                   
-                if aux == p.upper():    
-                    sg.Popup("Felicitaciones! encontraste la palabra: "+aux, title="Palabra encontrada!", font="Arial", background_color="#CDCDCD")
-                    ok=True
             if ok==False: #La palabra no estaba dentro de la lista de palabras
                 sg.Popup('La palabra "'+aux+'" no se encuentra dentro de la lista de palabras ingresadas', title="Palabra inexistente!", font="Arial", background_color="#CDCDCD")
+                if ori == True:
+                    for x in range(len(aux)):
+                        g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color='white') 
+                        auxY-=1
+                else:
+                    for x in range(len(aux)):
+                        g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color='white')
+                        auxX-=1                
             
-            for x in range(n):
+            """for x in range(n):
                 for y in range(n):
-                    g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color='white')  
-            palabra=[] 
+                    g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color='white') """
+            
+            palabraSel=[] 
 
     window.Close() 
     
@@ -165,26 +209,40 @@ def comenzar(matriz, n, palabra, listaPalabras):
 
 listaPalabras=[] #Contiene todas las palabras a ingresar a la sopa de letras 
 max=0 #indicará la cantidad de letras maxima que contiene la lista de palabras y deterimnará el tamaño de la matriz
-while True:
-    pal=input("Agregar palabra: ")
-    if pal == "z":
-        break
-    if len(pal)>max:
-        max=len(pal)
-    listaPalabras.append(pal)
 
-n=max+2 #La cantidad de filas y columnas dependera de la palabra ingresada mas grande y se le suma 2 para que quepan mas palabras
+sustantivos=["casa", "auto"]
+adjetivos=["feo", "lindo"]
+verbos=["correr", "saltar"]
+orientacion=False
+listaPalabras = ([sustantivos, adjetivos, verbos], orientacion)
+
+#listaPalabras[0]= [listaSustantivos, listaAdjetivos, listaVerbos]
+#listaPalabras[0][1]= ["casa", "auto"]
+#listaPalabras[0][1][0]= "casa"
+
+for j in range(3):
+    for i in range(len(listaPalabras[0][j])):
+        palabra=list(listaPalabras[0][j][i])
+        num=len(palabra)
+        if num >= max:
+            max=num
+
+n=max+1 #La cantidad de filas y columnas dependera de la palabra ingresada mas grande y se le suma 5 para que quepan las demas ingresadas
 matriz=crearMatriz(n)
 
-#Recorre la lista de palabras y las ingresa a la matriz 
-for i in range(len(listaPalabras)):
-    palabra=list(listaPalabras[i]) 
-    num=random.randrange(100)
-    if num <= 50: #Habrá un 50% de posibilidades de que la palabra se ingrese horizontalmente o verticalmente 
-        meterPalabraHorizontalmente(palabra, matriz, n, listaPalabras)
-    else:
-        meterPalabraVerticalmente(palabra, matriz, n, listaPalabras)
+if orientacion == True: #la orientacion de las palabras es horizontal
 
-palabra=[]
+    for j in range(3):
+        for i in range(len(listaPalabras[0][j])):
+            palabra=list(listaPalabras[0][j][i])
+            meterPalabraHorizontalmente(palabra, matriz, n, listaPalabras[0][j])  
+else: #la orientacion de las palabras es vertical
+
+    for j in range(3): 
+        for i in range(len(listaPalabras[0][j])):
+            palabra=list(listaPalabras[0][j][i])
+            meterPalabraVerticalmente(palabra, matriz, n, listaPalabras[0][j])
+
+palabraSeleccionada=[]
 llenarMatriz(matriz,n)
-comenzar(matriz,n,palabra,listaPalabras)
+comenzar(matriz,n,palabraSeleccionada,listaPalabras[0], listaPalabras[1])
