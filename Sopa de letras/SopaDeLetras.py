@@ -5,6 +5,7 @@ import random
 import string
 import sys
 import PySimpleGUI as sg
+import ventanaConfiguracion as vc
 
 #Creo una matriz de n * n con todos sus elementos siendo "*"
 def crearMatriz(n):
@@ -210,11 +211,8 @@ def comenzar(matriz, n, palabraSel, listaPal, ori):
 listaPalabras=[] #Contiene todas las palabras a ingresar a la sopa de letras 
 max=0 #indicará la cantidad de letras maxima que contiene la lista de palabras y deterimnará el tamaño de la matriz
 
-sustantivos=["casa", "auto"]
-adjetivos=["feo", "lindo"]
-verbos=["correr", "saltar"]
-orientacion=False
-listaPalabras = ([sustantivos, adjetivos, verbos], orientacion)
+listaPalabras = vc.recibirDatos()
+orientacion = listaPalabras[1]
 
 #listaPalabras[0]= [listaSustantivos, listaAdjetivos, listaVerbos]
 #listaPalabras[0][1]= ["casa", "auto"]
