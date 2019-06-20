@@ -156,30 +156,12 @@ while True:
     button, values = window.Read() 
     if button == 'Salir':
         break
-    '''if button == 'Agregar':
-        if values[0]== 'sustantivo':
-            g.agregarSus(values[0])
-        elif values[0]== 'adjetivo':
-            g.agregarAdj(values[0])
-        else:
-            g.agregarVerbo(values[0])
-        sg.Popup('se agregó la palabra: '+values[0])'''
     if button == 'Agregar':
-        '''try:
-            if clasificarPalabraWiktionary(values[0]) == 'NN':
-                listaSustantivos.append(values[0])
-            elif clasificarPalabraWiktionary(values[0]) == 'JJ':
-                listaAdjetivos.append(values[0])
-            elif clasificarPalabraWiktionary(values[0]) == 'VB':
-                listaVerbos.append(values[0])
-        except(AttributeError):
-            print('No se pudo clasificar')
-        # ~ sg.Popup('se agregó la palabra: '+values[0])
-        palabra = mostrar_palabras_agregadas(values[0])
-        window.FindElement('dato').Update(palabra)'''
         comprobarWikPattern(values[0])
         mostrar = ', '.join(listaPalabrasAceptadas)
         window.FindElement('dato').Update(mostrar)
+    if button == 'Generar sopa de letras':
+        break
         
     print('A',listaAdjetivos)
     print('S',listaSustantivos)
