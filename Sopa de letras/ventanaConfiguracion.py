@@ -3,6 +3,7 @@ import sys
 import PySimpleGUI as sg
 from pattern.web import Wiktionary
 from pattern.es import parse,split
+import SopaDeLetras as sdl
 
 def clasificarPalabraWiktionary(palabra):		
     w = Wiktionary(language="es")
@@ -28,7 +29,7 @@ def clasificarPalabraWiktionary(palabra):
 def clasificarPalabraPattern(palabra):
 
     '''
-    clasifica el string recbido como paramentro(x) en pattern, analizando la palabra, devuleve su clasificacion
+    clasifica el string recibido como paramentro en pattern, analizando la palabra, devuleve su clasificacion
     sustantivo, adjetivo o verbo.
     '''
 
@@ -183,7 +184,3 @@ while True:
     print('S',listaSustantivos)
     print('V',listaVerbos)
     print(lista_palabras)
-		 
-
-
-window.Close()
