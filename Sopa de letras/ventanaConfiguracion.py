@@ -24,19 +24,6 @@ def clasificarPalabraWiktionary(palabra):
 
 
 
-def mostrar_palabras_agregadas (pal):
-    '''
-        agrego la palabra una lista general,
-        para asi poder formatear su salida en la ventana,
-        y tener un control de todas las palabras que se ingresaron, si
-        el docente, decide eliminar un palabra lo pueda hacer sin problemas
-        ademas, de eliminarse en la lista general, se verificara en las listas correspondientes
-        a esa palabras, si existe se eliminan tambien, sino sale un cartel de alerta
-    '''
-    lista_palabras.append(pal)
-    resultado = ', '.join(['{}'.format(o) for o in lista_palabras])
-    return resultado
-
 
 def clasificarPalabraPattern(palabra):
 
@@ -101,10 +88,13 @@ def clasificacionWiktionary(p):
     try:
         if clasificarPalabraWiktionary(p) == 'NN':
             listaSustantivos.append(p)
+            listaPalabrasAceptadas.append(p)
         elif clasificarPalabraWiktionary(p) == 'JJ':
             listaAdjetivos.append(p)
+            listaPalabrasAceptadas.append(p)
         elif clasificarPalabraWiktionary(p) == 'VB':
             listaVerbos.append(p)
+            listaPalabrasAceptadas.append(p)
         else:
             print('No se pudo agregar')
     except(AttributeError):
@@ -115,10 +105,13 @@ def clasificacionPattern(p):
 	try:
 		if clasificarPalabraPattern(p) == 'NN':
 			listaSustantivos.append(p)
+			listaPalabrasAceptadas.append(p)
 		elif clasificarPalabraPattern(p) == 'JJ':
 			listaAdjetivos.append(p)
+			listaPalabrasAceptadas.append(p)
 		elif clasificarPalabraPattern(p) == 'VB':
 			listaVerbos.append(p)
+			listaPalabrasAceptadas.append(p)
 		else:
 			print('No se pudo agregar')
 	except(AttributeError):
@@ -140,15 +133,18 @@ listaPalabrasAceptadas = []
    
 
 def recibirDatos():
+	'''
+		Retorna los datos y la configuracion para usar en la sopa de letras
+	'''
 	return lista_palabras
 
 
 
 layout = [
     [sg.Text('Sopa de Letras con PySimpleGUI', size=(32, 1), font=('Time New Roman', 14), background_color='#CDCDCD')],
-    [sg.Text('● Ingrese una palabra:', text_color='blue',font=('Time New Roman', 12), background_color='#CDCDCD'), sg.InputText(), sg.Submit('Agregar'), sg.Submit('Quitar')],
+    [sg.Text('● Ingrese una palabra:', text_color='darkblue',font=('Time New Roman', 12), background_color='#CDCDCD'), sg.InputText(), sg.Submit('Agregar'), sg.Submit('Quitar')],
     [sg.Multiline(key='dato', size=(70,1), font='Courier 10')],
-    [sg.Text('● Nivel de dificultad:     ', text_color='blue', font=('Time New Roman', 11), background_color='#CDCDCD'), sg.Radio('Fácil ', "RADIO1", default=True, background_color='#CDCDCD'), sg.Radio('Mediano', "RADIO1", background_color='#CDCDCD'), sg.Radio('Difícil', "RADIO1", background_color='#CDCDCD')],
+    [sg.Text('● Nivel de dificultad:     ', text_color='darkblue', font=('Time New Roman', 11), background_color='#CDCDCD'), sg.Radio('Sin ayuda ', "RADIO1", default=True, background_color='#CDCDCD'), sg.Radio('Mostrar definiciones', "RADIO1", background_color='#CDCDCD'), sg.Radio('Mostrar palabras a buscar', "RADIO1", background_color='#CDCDCD')],
     [sg.Submit('Generar sopa de letras'), sg.Cancel('Salir')]
  ]
 window = sg.Window('Seminario de Lenguajes 2019: Python', font=('Arial', 10), background_color='#CDCDCD').Layout(layout)
@@ -180,7 +176,8 @@ while True:
         palabra = mostrar_palabras_agregadas(values[0])
         window.FindElement('dato').Update(palabra)'''
         comprobarWikPattern(values[0])
-        
+        mostrar = ', '.join(listaPalabrasAceptadas)
+        window.FindElement('dato').Update(mostrar)
         
     print('A',listaAdjetivos)
     print('S',listaSustantivos)
