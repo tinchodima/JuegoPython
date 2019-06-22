@@ -87,6 +87,7 @@ def clasificacionWiktionary(p):
             listaPalabrasAceptadas.append(p)
         else:
             print('No se pudo agregar')
+            
     except(AttributeError):
         print('No se pudo agregar')
 
@@ -103,6 +104,7 @@ def clasificacionPattern(p):
 			listaPalabrasAceptadas.append(p)
 		else:
 			print('No se pudo agregar')
+            
 	except(AttributeError):
 		print('No se pudo agregar')
 
@@ -117,14 +119,20 @@ def recibirDatos():
 	'''
 	return lista_palabras
 
+def recibirColores():
+	'''
+		Retorna los colores de los tipos de palabras
+	'''
+	return colores 
+
 layout = [
     [sg.Text('Sopa de Letras con PySimpleGUI', size=(32, 1), font=('Time New Roman', 14), background_color='#CDCDCD')],
     [sg.Text('● Ingrese una palabra:', text_color='darkblue',font=('Time New Roman', 12), background_color='#CDCDCD'), sg.InputText(), sg.Submit('Agregar'), sg.Submit('Quitar')],
-    [sg.Multiline(key='dato', size=(70,1), font='Courier 10')],
+    [sg.Multiline(key='dato', size=(70,1), font='Arial')],
     [sg.Text('● Nivel de dificultad:     ', text_color='darkblue', font=('Time New Roman', 11), background_color='#CDCDCD'), sg.Radio('Sin ayuda ', "RADIO1", default=True, background_color='#CDCDCD'), sg.Radio('Mostrar definiciones', "RADIO1", background_color='#CDCDCD'), sg.Radio('Mostrar palabras a buscar', "RADIO1", background_color='#CDCDCD')],
     [sg.Text('● Orientación:     ', text_color='darkblue', font=('Time New Roman', 10), background_color='#CDCDCD'), sg.Radio('Horizontalmente', "RADIO2", default=True, background_color='#CDCDCD'), sg.Radio('Verticalmente', "RADIO2", background_color='#CDCDCD')],
     [sg.Submit('Generar sopa de letras'), sg.Cancel('Salir')]
- ]
+]
 window = sg.Window('Seminario de Lenguajes 2019: Python', font=('Arial', 10), background_color='#CDCDCD').Layout(layout)
 
 listaSustantivos = []	
@@ -134,24 +142,28 @@ listaPalabrasAceptadas = []
 lista_palabras = ()
 
 while True:
-    button, values = window.Read() 
-    orientacion=values[4]
-
-    if button == 'Salir':
-        window.Close()
-        break
-
-    if button == 'Agregar':
-        comprobarWikPattern(values[0])
-        mostrar = ', '.join(listaPalabrasAceptadas)
-        window.FindElement('dato').Update(mostrar)
-
-    if button == 'Generar sopa de letras':
-        break
+    button, values = window.Read()
     
-    print('Adjetivos: ',listaAdjetivos)
-    print('Sustantivos: ',listaSustantivos)
-    print('Verbos: ',listaVerbos)
-    print(lista_palabras)
+    if button == 'Salir':
+        break
+    else:    
+        orientacion=values[4]
 
-lista_palabras = ([listaSustantivos, listaAdjetivos,listaVerbos],orientacion)    
+        if button == 'Agregar':
+            comprobarWikPattern(values[0])
+            mostrar = ', '.join(listaPalabrasAceptadas)
+            window.FindElement('dato').Update(mostrar)
+
+        if button == 'Generar sopa de letras':
+            break
+        
+        print('Adjetivos: ', listaAdjetivos)
+        print('Sustantivos: ', listaSustantivos)
+        print('Verbos: ', listaVerbos)
+
+if button != 'Salir':
+    lista_palabras = ([listaSustantivos, listaAdjetivos, listaVerbos], orientacion)
+    colores = dict(cSus= 'yellow', cAdj='red', cVer= 'green')
+else:
+    lista_palabras=()
+    colores={}    
