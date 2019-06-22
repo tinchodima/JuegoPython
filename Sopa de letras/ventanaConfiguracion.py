@@ -24,32 +24,25 @@ def clasificarPalabraWiktionary(palabra):
     except(AttributeError):
         return 'No se pudo clasificar'
 
-
-
-
 def clasificarPalabraPattern(palabra):
-
     '''
     clasifica el string recibido como paramentro en pattern, analizando la palabra, devuleve su clasificacion
-    sustantivo, adjetivo o verbo.
+    (sustantivo, adjetivo o verbo).
     '''
-
     s = parse(palabra).split()
     try:
         for cada in s:
-                    for i in cada:
-                        if i[1] == 'VB':
-                            return 'VB'
-                        elif i[1] == 'NN':
-                            return 'NN'
-                        elif i[1] == 'JJ':
-                            return 'JJ'
-                        else:
-                            return 'No se pudo clasificar'
+            for i in cada:
+                if i[1] == 'VB':
+                    return 'VB'
+                elif i[1] == 'NN':
+                    return 'NN'
+                elif i[1] == 'JJ':
+                    return 'JJ'
+                else:
+                    return 'No se pudo clasificar'
     except(AttributeError):
         return 'No se pudo clasificar'
-	
-
 
 def comprobarWikPattern(palabra):
 	if clasificarPalabraPattern(palabra) == clasificarPalabraWiktionary(palabra) and clasificarPalabraPattern(palabra) != 'No se pudo clasificar':
@@ -80,11 +73,6 @@ def comprobarWikPattern(palabra):
 		msg = 'Clasificacion no encontrada en Pattern'
 		reporteClasificaciones(msg)
 		print('wik3')
-		
-		
-		
-
-
 
 def clasificacionWiktionary(p):
     try:
@@ -102,7 +90,6 @@ def clasificacionWiktionary(p):
     except(AttributeError):
         print('No se pudo agregar')
 
-
 def clasificacionPattern(p):
 	try:
 		if clasificarPalabraPattern(p) == 'NN':
@@ -119,20 +106,10 @@ def clasificacionPattern(p):
 	except(AttributeError):
 		print('No se pudo agregar')
 
-
 def reporteClasificaciones(error):
 	f = open('reporte.txt', 'a')
 	f.write(error + '\n')
 	f.close
-
-orientacion=True
-listaSustantivos = []	
-listaAdjetivos = []
-listaVerbos = []
-lista_palabras = ([listaSustantivos, listaAdjetivos,listaVerbos],orientacion)
-listaPalabrasAceptadas = []
-   
-   
 
 def recibirDatos():
 	'''
@@ -140,30 +117,41 @@ def recibirDatos():
 	'''
 	return lista_palabras
 
-
-
 layout = [
     [sg.Text('Sopa de Letras con PySimpleGUI', size=(32, 1), font=('Time New Roman', 14), background_color='#CDCDCD')],
     [sg.Text('● Ingrese una palabra:', text_color='darkblue',font=('Time New Roman', 12), background_color='#CDCDCD'), sg.InputText(), sg.Submit('Agregar'), sg.Submit('Quitar')],
     [sg.Multiline(key='dato', size=(70,1), font='Courier 10')],
     [sg.Text('● Nivel de dificultad:     ', text_color='darkblue', font=('Time New Roman', 11), background_color='#CDCDCD'), sg.Radio('Sin ayuda ', "RADIO1", default=True, background_color='#CDCDCD'), sg.Radio('Mostrar definiciones', "RADIO1", background_color='#CDCDCD'), sg.Radio('Mostrar palabras a buscar', "RADIO1", background_color='#CDCDCD')],
+    [sg.Text('● Orientación:     ', text_color='darkblue', font=('Time New Roman', 10), background_color='#CDCDCD'), sg.Radio('Horizontalmente', "RADIO2", default=True, background_color='#CDCDCD'), sg.Radio('Verticalmente', "RADIO2", background_color='#CDCDCD')],
     [sg.Submit('Generar sopa de letras'), sg.Cancel('Salir')]
  ]
 window = sg.Window('Seminario de Lenguajes 2019: Python', font=('Arial', 10), background_color='#CDCDCD').Layout(layout)
 
-#g = Game()
+listaSustantivos = []	
+listaAdjetivos = []
+listaVerbos = []
+listaPalabrasAceptadas = []
+lista_palabras = ()
+
 while True:
     button, values = window.Read() 
+    orientacion=values[4]
+
     if button == 'Salir':
+        window.Close()
         break
+
     if button == 'Agregar':
         comprobarWikPattern(values[0])
         mostrar = ', '.join(listaPalabrasAceptadas)
         window.FindElement('dato').Update(mostrar)
+
     if button == 'Generar sopa de letras':
         break
-        
-    print('A',listaAdjetivos)
-    print('S',listaSustantivos)
-    print('V',listaVerbos)
+    
+    print('Adjetivos: ',listaAdjetivos)
+    print('Sustantivos: ',listaSustantivos)
+    print('Verbos: ',listaVerbos)
     print(lista_palabras)
+
+lista_palabras = ([listaSustantivos, listaAdjetivos,listaVerbos],orientacion)    
