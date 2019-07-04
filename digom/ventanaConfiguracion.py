@@ -1,5 +1,6 @@
 #Gomez, Brian Agustin
 #Di Maria, Juan Martin
+
 import sys
 import PySimpleGUI as sg
 from pattern.web import Wiktionary
@@ -117,13 +118,15 @@ def recibirDatos():
 	'''
 		Retorna los datos y la configuracion para usar en la sopa de letras
 	'''
-	return lista_palabras
+	return listaPalabras
 
 def recibirColores():
 	'''
 		Retorna los colores de los tipos de palabras
 	'''
-	return colores 
+	return colores
+
+
 
 layout = [
     [sg.Text('Sopa de Letras con PySimpleGUI', size=(32, 1), font=('Time New Roman', 14), background_color='#CDCDCD')],
@@ -139,7 +142,22 @@ listaSustantivos = []
 listaAdjetivos = []
 listaVerbos = []
 listaPalabrasAceptadas = []
-lista_palabras = ()
+listaPalabras = ()
+
+
+
+
+
+#----------------------------------------------------------------------------------------------------------------------------------#
+
+#BRIAN CAMBIA QUE CUANDO LA PALABRA SEA IGUAL (LA QUE INGRESA) QUE NO LA AGREGUE A LA LISTA
+
+#----------------------------------------------------------------------------------------------------------------------------------#
+
+
+
+
+
 
 while True:
     button, values = window.Read()
@@ -148,6 +166,10 @@ while True:
         break
     else:    
         orientacion=values[4]
+        if(values[1]):
+            ayuda=False
+        else:
+            ayuda=True 
 
         if button == 'Agregar':
             comprobarWikPattern(values[0])
@@ -162,8 +184,8 @@ while True:
         print('Verbos: ', listaVerbos)
 
 if button != 'Salir':
-    lista_palabras = ([listaSustantivos, listaAdjetivos, listaVerbos], orientacion)
+    listaPalabras = ([listaSustantivos, listaAdjetivos, listaVerbos], orientacion, ayuda)
     colores = dict(cSus= 'yellow', cAdj='red', cVer= 'green')
 else:
-    lista_palabras=()
+    listaPalabras=()
     colores={}    
