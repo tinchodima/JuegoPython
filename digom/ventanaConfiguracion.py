@@ -135,7 +135,7 @@ def recibirDatos():
 	'''
 	return listaPalabras
 
-def recibirColores():
+def recibirColores(colores):
 	'''
 		Retorna los colores de los tipos de palabras
 	'''
@@ -156,15 +156,15 @@ def recibirTipoDeAyuda():
 
 
 layout = [
-    [sg.Text('Sopa de Letras con PySimpleGUI', size=(32, 1), font=('Time New Roman', 14), background_color='#CDCDCD')],
-    [sg.Text('● Ingrese una palabra:', text_color='darkblue',font=('Time New Roman', 12), background_color='#CDCDCD'), sg.InputText(), sg.Submit('Agregar'), sg.Submit('Quitar')],
+    [sg.Text('Sopa de Letras con PySimpleGUI', size=(32, 1), font=('Time New Roman', 14), background_color='#80cbc4')],
+    [sg.Text('● Ingrese una palabra:', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'), sg.InputText(), sg.Submit('Agregar'), sg.Submit('Quitar')],
     [sg.Multiline(key='dato', size=(70,1), font='Arial')],
-    [sg.Text('● Nivel de dificultad:     ', text_color='darkblue', font=('Time New Roman', 11), background_color='#CDCDCD'), sg.Radio('Sin ayuda ', "RADIO1", default=True, background_color='#CDCDCD'), sg.Radio('Mostrar definiciones', "RADIO1", background_color='#CDCDCD'), sg.Radio('Mostrar palabras a buscar', "RADIO1", background_color='#CDCDCD')],
-    [sg.Text('● Orientación:     ', text_color='darkblue', font=('Time New Roman', 10), background_color='#CDCDCD'), sg.Radio('Horizontalmente', "RADIO2", default=True, background_color='#CDCDCD'), sg.Radio('Verticalmente', "RADIO2", background_color='#CDCDCD')],
-    [sg.Text('● Eleguir colores',text_color='darkblue', font=('Time New Roman', 10), background_color='#CDCDCD'), sg.ColorChooserButton('Sustantivos'), sg.ColorChooserButton('Adjetivos'), sg.ColorChooserButton('Verbos')],
+    [sg.Text('● Nivel de dificultad:     ', text_color='black', font=('Time New Roman', 11),background_color='#80cbc4'), sg.Radio('Sin ayuda ', "RADIO1", default=True, background_color='#80cbc4'), sg.Radio('Mostrar definiciones', "RADIO1", background_color='#80cbc4'), sg.Radio('Mostrar palabras a buscar', "RADIO1", background_color='#80cbc4')],
+    [sg.Text('● Orientación:     ', text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'), sg.Radio('Horizontalmente', "RADIO2", default=True, background_color='#80cbc4'), sg.Radio('Verticalmente', "RADIO2", background_color='#80cbc4')],
+    [sg.Text('● Eleguir colores',text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'), sg.ColorChooserButton('Sustantivos',button_color=('#FFFFFF','#03A9F4')), sg.ColorChooserButton('Adjetivos',button_color=('#FFFFFF','#03A9F4')), sg.ColorChooserButton('Verbos',button_color=('#FFFFFF','#03A9F4'))],
     [sg.Submit('Generar sopa de letras'), sg.Cancel('Salir')]
 ]
-window = sg.Window('Seminario de Lenguajes 2019: Python', font=('Arial', 10), background_color='#CDCDCD').Layout(layout)
+window = sg.Window('Seminario de Lenguajes 2019: Python', font=('Arial', 10), background_color='#80cbc4').Layout(layout)
 
 listaSustantivos = []	
 listaAdjetivos = []
@@ -172,7 +172,7 @@ listaVerbos = []
 listaPalabrasAceptadas = []
 listaPalabras = ()
 listaAyuda= ()
-
+colores = ()
 
 
 
@@ -217,7 +217,8 @@ while True:
 
 if button != 'Salir':
     listaPalabras = ([listaSustantivos, listaAdjetivos, listaVerbos], orientacion, ayuda)
-    colores = dict(cSus= 'yellow', cAdj='red', cVer= 'green')
+    #colores = dict(cSus= 'yellow', cAdj='red', cVer= 'green')
+    
 else:
     listaPalabras=()
     colores={}    
