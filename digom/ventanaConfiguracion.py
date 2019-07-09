@@ -126,6 +126,17 @@ def recibirColores():
 	'''
 	return colores
 
+def recibirTipoDeAyuda():
+	'''
+		1: Sin ayuda
+		2: Mostrar definiciones
+		3: Mostrar palabras a buscar
+		Devuelve en una tupla el tipo de ayuda seleccionado
+	'''
+	
+	return False
+	
+
 
 
 layout = [
@@ -143,6 +154,7 @@ listaAdjetivos = []
 listaVerbos = []
 listaPalabrasAceptadas = []
 listaPalabras = ()
+listaAyuda= ()
 
 
 
@@ -165,6 +177,7 @@ while True:
     if button == 'Salir':
         break
     else:    
+        listaAyuda= (values[1],values[2],values[3])
         orientacion=values[4]
         if(values[1]):
             ayuda=False
@@ -182,6 +195,7 @@ while True:
         print('Adjetivos: ', listaAdjetivos)
         print('Sustantivos: ', listaSustantivos)
         print('Verbos: ', listaVerbos)
+        print(listaAyuda)
 
 if button != 'Salir':
     listaPalabras = ([listaSustantivos, listaAdjetivos, listaVerbos], orientacion, ayuda)
