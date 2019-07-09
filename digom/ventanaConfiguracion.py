@@ -45,9 +45,9 @@ def clasificarPalabraPattern(palabra):
     except(AttributeError):
         return 'No se pudo clasificar'
 
-def comprobarWikPattern(palabra):
+def comprobarWikPattern(palabra,listaPalabras):
 	if clasificarPalabraPattern(palabra) == clasificarPalabraWiktionary(palabra) and clasificarPalabraPattern(palabra) != 'No se pudo clasificar':
-		clasificacionWiktionary(palabra)
+		clasificacionWiktionary(palabra,listaPalabras)
 		print('wik1')
 	elif clasificarPalabraWiktionary(palabra) == 'No se pudo clasificar' and clasificarPalabraPattern(palabra) == 'No se pudo clasificar':
 		#informar en un reporte que la clasificacion no existe ni en wik ni en pattern
@@ -55,59 +55,72 @@ def comprobarWikPattern(palabra):
 		reporteClasificaciones(msg)
 		print('ninguno')
 	elif clasificarPalabraWiktionary(palabra) != clasificarPalabraPattern(palabra) and clasificarPalabraWiktionary(palabra) != 'No se pudo clasificar':
-		clasificacionPattern(palabra)
+		clasificacionPattern(palabra,listaPalabras)
 		print('pattern1')
 		#pedir que ingrese una definicion
 	elif clasificarPalabraWiktionary(palabra) != clasificarPalabraPattern(palabra) and clasificarPalabraWiktionary(palabra) != 'No se pudo clasificar' and clasificarPalabraPattern(palabra) != 'No se pudo clasificar':
-		clasificacionPattern(palabra)
+		clasificacionPattern(palabra,listaPalabras)
 		print('pattern2')
 		#pedir que ingrese una definicion
 	elif clasificarPalabraPattern(palabra) != clasificarPalabraWiktionary(palabra) and clasificarPalabraPattern(palabra) != 'No se pudo clasificar':
 		#informar en un reporte que la clasificacion no existe en pattern
-		clasificacionWiktionary(palabra)
+		clasificacionWiktionary(palabra,listaPalabras)
 		msg = 'Clasificacion no encontrada en Pattern'
 		reporteClasificaciones(msg)
 		print('wik2')
 	elif clasificarPalabraPattern(palabra) != clasificarPalabraWiktionary(palabra) and clasificarPalabraPattern(palabra) != 'No se pudo clasificar' and clasificarPalabraWiktionary(palabra) != 'No se pudo clasificar':
 		#informar en un reporte que la clasificacion no existe en pattern
-		clasificacionWiktionary(palabra)
+		clasificacionWiktionary(palabra,listaPalabras)
 		msg = 'Clasificacion no encontrada en Pattern'
 		reporteClasificaciones(msg)
 		print('wik3')
 
-def clasificacionWiktionary(p):
+def clasificacionWiktionary(p,listaPalabras):
     try:
-        if clasificarPalabraWiktionary(p) == 'NN':
-            listaSustantivos.append(p)
-            listaPalabrasAceptadas.append(p)
-        elif clasificarPalabraWiktionary(p) == 'JJ':
-            listaAdjetivos.append(p)
-            listaPalabrasAceptadas.append(p)
-        elif clasificarPalabraWiktionary(p) == 'VB':
-            listaVerbos.append(p)
-            listaPalabrasAceptadas.append(p)
+        if comprobarQueLaPalabraNoEsteAgregada(p,listaPalabras) == False:
+            sg.Popup('La palabra ya esta agregada en la sopa de letras')
         else:
-            print('No se pudo agregar')
+            if clasificarPalabraWiktionary(p) == 'NN':
+                listaSustantivos.append(p)
+                listaPalabrasAceptadas.append(p)
+            elif clasificarPalabraWiktionary(p) == 'JJ':
+                listaAdjetivos.append(p)
+                listaPalabrasAceptadas.append(p)
+            elif clasificarPalabraWiktionary(p) == 'VB':
+                listaVerbos.append(p)
+                listaPalabrasAceptadas.append(p)
+            else:
+                print('No se pudo agregar')
             
     except(AttributeError):
         print('No se pudo agregar')
 
-def clasificacionPattern(p):
+def clasificacionPattern(p,listaPalabras):
 	try:
-		if clasificarPalabraPattern(p) == 'NN':
-			listaSustantivos.append(p)
-			listaPalabrasAceptadas.append(p)
-		elif clasificarPalabraPattern(p) == 'JJ':
-			listaAdjetivos.append(p)
-			listaPalabrasAceptadas.append(p)
-		elif clasificarPalabraPattern(p) == 'VB':
-			listaVerbos.append(p)
-			listaPalabrasAceptadas.append(p)
+		if comprobarQueLaPalabraNoEsteAgregada(p,listaPalabras) == False:
+			sg.Popup('La palabra ya esta agregada en la sopa de letras')
 		else:
-			print('No se pudo agregar')
+		    if clasificarPalabraPattern(p) == 'NN':
+			    listaSustantivos.append(p)
+			    listaPalabrasAceptadas.append(p)
+		    elif clasificarPalabraPattern(p) == 'JJ':
+			    listaAdjetivos.append(p)
+			    listaPalabrasAceptadas.append(p)
+		    elif clasificarPalabraPattern(p) == 'VB':
+			    listaVerbos.append(p)
+			    listaPalabrasAceptadas.append(p)
+		    else:
+			    print('No se pudo agregar')
             
 	except(AttributeError):
 		print('No se pudo agregar')
+
+def comprobarQueLaPalabraNoEsteAgregada(palabra,listaPalabras):		
+	if palabra in listaPalabras:
+		return False
+	else:
+		return True
+
 
 def reporteClasificaciones(error):
 	f = open('reporte.txt', 'a')
@@ -163,6 +176,7 @@ listaAyuda= ()
 #----------------------------------------------------------------------------------------------------------------------------------#
 
 #BRIAN CAMBIA QUE CUANDO LA PALABRA SEA IGUAL (LA QUE INGRESA) QUE NO LA AGREGUE A LA LISTA
+#OKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 #----------------------------------------------------------------------------------------------------------------------------------#
 
@@ -185,7 +199,7 @@ while True:
             ayuda=True 
 
         if button == 'Agregar':
-            comprobarWikPattern(values[0])
+            comprobarWikPattern(values[0],listaPalabrasAceptadas)
             mostrar = ', '.join(listaPalabrasAceptadas)
             window.FindElement('dato').Update(mostrar)
 
