@@ -135,12 +135,10 @@ def recibirDatos():
 	'''
 	return listaPalabras
 
-def recibirColores(colores):
+def recibirColores():
 	'''
 		Retorna los colores de los tipos de palabras
-	'''
-	colores= (values['Sustantivos'], values['Adjetivos'], values['Verbos'])
-	
+	'''	
 	return colores
 
 def recibirTipoDeAyuda():
@@ -156,12 +154,12 @@ def recibirTipoDeAyuda():
 
 
 layout = [
-    [sg.Text('Sopa de Letras con PySimpleGUI', size=(32, 1), font=('Time New Roman', 14), background_color='#80cbc4')],
+    [sg.Text('DIGOM: SOPA DE LETRAS', size=(32, 1), font=('Time New Roman', 14), background_color='#80cbc4')],
     [sg.Text('● Ingrese una palabra:', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'), sg.InputText(), sg.Submit('Agregar'), sg.Submit('Quitar')],
     [sg.Multiline(key='dato', size=(70,1), font='Arial')],
     [sg.Text('● Nivel de dificultad:     ', text_color='black', font=('Time New Roman', 11),background_color='#80cbc4'), sg.Radio('Sin ayuda ', "RADIO1", default=True, background_color='#80cbc4'), sg.Radio('Mostrar definiciones', "RADIO1", background_color='#80cbc4'), sg.Radio('Mostrar palabras a buscar', "RADIO1", background_color='#80cbc4')],
-    [sg.Text('● Orientación:     ', text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'), sg.Radio('Horizontalmente', "RADIO2", default=True, background_color='#80cbc4'), sg.Radio('Verticalmente', "RADIO2", background_color='#80cbc4')],
-    [sg.Text('● Eleguir colores',text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'), sg.ColorChooserButton('Sustantivos',button_color=('#FFFFFF','#03A9F4')), sg.ColorChooserButton('Adjetivos',button_color=('#FFFFFF','#03A9F4')), sg.ColorChooserButton('Verbos',button_color=('#FFFFFF','#03A9F4'))],
+    [sg.Text('● Orientación de las palabras:     ', text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'), sg.Radio('Horizontal', "RADIO2", default=True, background_color='#80cbc4'), sg.Radio('Vertical', "RADIO2", background_color='#80cbc4')],
+    [sg.Text('● Elegir colores',text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'), sg.ColorChooserButton('Sustantivos',button_color=('#FFFFFF','#03A9F4')), sg.ColorChooserButton('Adjetivos',button_color=('#FFFFFF','#03A9F4')), sg.ColorChooserButton('Verbos',button_color=('#FFFFFF','#03A9F4'))],
     [sg.Submit('Generar sopa de letras'), sg.Cancel('Salir')]
 ]
 window = sg.Window('Seminario de Lenguajes 2019: Python', font=('Arial', 10), background_color='#80cbc4').Layout(layout)
@@ -173,21 +171,6 @@ listaPalabrasAceptadas = []
 listaPalabras = ()
 listaAyuda= ()
 colores = ()
-
-
-
-
-#----------------------------------------------------------------------------------------------------------------------------------#
-
-#BRIAN CAMBIA QUE CUANDO LA PALABRA SEA IGUAL (LA QUE INGRESA) QUE NO LA AGREGUE A LA LISTA
-#OKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-
-#----------------------------------------------------------------------------------------------------------------------------------#
-
-
-
-
-
 
 while True:
     button, values = window.Read()
@@ -217,7 +200,27 @@ while True:
 
 if button != 'Salir':
     listaPalabras = ([listaSustantivos, listaAdjetivos, listaVerbos], orientacion, ayuda)
-    #colores = dict(cSus= 'yellow', cAdj='red', cVer= 'green')
+
+    #Envio de colores, si no se elije alguno se aplica el color por defecto#
+    if (values['Sustantivos']==''):
+        colorS='yellow'
+        sg.Popup('Como no se agrego un color especifico a los sustantivos tendrán su color por defecto')
+    else:
+        colorS= values['Sustantivos']  
+
+    if (values['Adjetivos']==''):
+        colorA= 'red'
+        sg.Popup('Como no se agrego un color especifico a los adjetivos tendrán su color por defecto')
+    else:
+        colorA= values['Adjetivos']
+
+    if (values['Verbos']==''):
+        colorV='green'
+        sg.Popup('Como no se agrego un color especifico a los verbos tendrán su color por defecto') 
+    else:
+        colorV= values['Verbos']  
+
+    colores = dict(cSus=colorS, cAdj=colorA, cVer=colorV)
     
 else:
     listaPalabras=()
