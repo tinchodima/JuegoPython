@@ -7,6 +7,8 @@ from pattern.web import Wiktionary
 from pattern.es import parse,split
 import SopaDeLetras as sdl
 
+#sg.ChangeLookAndFeel('BluePurple')
+
 def clasificarPalabraWiktionary(palabra):		
     w = Wiktionary(language="es")
     a = w.search(palabra)
@@ -137,6 +139,8 @@ def recibirColores():
 	'''
 		Retorna los colores de los tipos de palabras
 	'''
+	colores= (values['Sustantivos'], values['Adjetivos'], values['Verbos'])
+	
 	return colores
 
 def recibirTipoDeAyuda():
@@ -151,13 +155,13 @@ def recibirTipoDeAyuda():
 	
 
 
-
 layout = [
     [sg.Text('Sopa de Letras con PySimpleGUI', size=(32, 1), font=('Time New Roman', 14), background_color='#CDCDCD')],
     [sg.Text('● Ingrese una palabra:', text_color='darkblue',font=('Time New Roman', 12), background_color='#CDCDCD'), sg.InputText(), sg.Submit('Agregar'), sg.Submit('Quitar')],
     [sg.Multiline(key='dato', size=(70,1), font='Arial')],
     [sg.Text('● Nivel de dificultad:     ', text_color='darkblue', font=('Time New Roman', 11), background_color='#CDCDCD'), sg.Radio('Sin ayuda ', "RADIO1", default=True, background_color='#CDCDCD'), sg.Radio('Mostrar definiciones', "RADIO1", background_color='#CDCDCD'), sg.Radio('Mostrar palabras a buscar', "RADIO1", background_color='#CDCDCD')],
     [sg.Text('● Orientación:     ', text_color='darkblue', font=('Time New Roman', 10), background_color='#CDCDCD'), sg.Radio('Horizontalmente', "RADIO2", default=True, background_color='#CDCDCD'), sg.Radio('Verticalmente', "RADIO2", background_color='#CDCDCD')],
+    [sg.Text('● Eleguir colores',text_color='darkblue', font=('Time New Roman', 10), background_color='#CDCDCD'), sg.ColorChooserButton('Sustantivos'), sg.ColorChooserButton('Adjetivos'), sg.ColorChooserButton('Verbos')],
     [sg.Submit('Generar sopa de letras'), sg.Cancel('Salir')]
 ]
 window = sg.Window('Seminario de Lenguajes 2019: Python', font=('Arial', 10), background_color='#CDCDCD').Layout(layout)
