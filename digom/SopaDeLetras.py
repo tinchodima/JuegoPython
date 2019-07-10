@@ -8,6 +8,7 @@ import string
 import sys
 import PySimpleGUI as sg
 import ventanaConfiguracion as vc
+from pattern.web import Wiktionary
 
 #Creo una matriz de n * n con todos sus elementos siendo "*"
 def crearMatriz(n):
@@ -225,6 +226,29 @@ def recibirDatosConfiguracion():
     listaPalabras = vc.recibirDatos() #recibe una lista de listas desde la ventana configuracion
     colores = vc.recibirColores() #diccionario con colores de los tipos de letra
     return listaPalabras, colores
+
+
+
+
+#------------------------------------------------------------Seccion de Brian Gomez, aqui voy a toquetear tu programa------------------------------------------------------------#     
+
+def mostrarDefinicionAlAzar(listaPalabras):
+	'''
+		Devuelve una definicion al azar en base a las palabras agregadas
+	'''
+	posL=random.randrage(3)
+	posP=random.randrage(len(listaPalabras[posL]))
+	definicion = listaPalabras[posL][posP]
+	return definicion
+	
+	
+
+
+#------------------------------------------------------------Solo el programa tocare no te ilusiones-----------------------------------------------------------------------------#     
+
+
+
+
 
 #------------------------------------------------------------PP------------------------------------------------------------#     
 listaPalabras=recibirDatosConfiguracion()[0]

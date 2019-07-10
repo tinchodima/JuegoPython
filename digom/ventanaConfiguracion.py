@@ -50,6 +50,7 @@ def clasificarPalabraPattern(palabra):
 def comprobarWikPattern(palabra,listaPalabras):
 	if clasificarPalabraPattern(palabra) == clasificarPalabraWiktionary(palabra) and clasificarPalabraPattern(palabra) != 'No se pudo clasificar':
 		clasificacionWiktionary(palabra,listaPalabras)
+		definiciones[palabra] = obtenerDefinicion(palabra)
 		print('wik1')
 	elif clasificarPalabraWiktionary(palabra) == 'No se pudo clasificar' and clasificarPalabraPattern(palabra) == 'No se pudo clasificar':
 		#informar en un reporte que la clasificacion no existe ni en wik ni en pattern
@@ -59,20 +60,28 @@ def comprobarWikPattern(palabra,listaPalabras):
 	elif clasificarPalabraWiktionary(palabra) != clasificarPalabraPattern(palabra) and clasificarPalabraWiktionary(palabra) != 'No se pudo clasificar':
 		clasificacionPattern(palabra,listaPalabras)
 		print('pattern1')
+		sg.Popup('La clasificacion no se encuentra en Wiktionary, ingresar una definicion manualmente')
+		text = sg.PopupGetText(palabra, 'Ingrese una definicion')
+		definiciones[palabra] = text
 		#pedir que ingrese una definicion
 	elif clasificarPalabraWiktionary(palabra) != clasificarPalabraPattern(palabra) and clasificarPalabraWiktionary(palabra) != 'No se pudo clasificar' and clasificarPalabraPattern(palabra) != 'No se pudo clasificar':
 		clasificacionPattern(palabra,listaPalabras)
 		print('pattern2')
+		sg.Popup('La clasificacion no se encuentra en Wiktionary, ingresar una definicion manualmente')
+		text = sg.PopupGetText(palabra, 'Ingrese una definicion')
+		definiciones[palabra] = text
 		#pedir que ingrese una definicion
 	elif clasificarPalabraPattern(palabra) != clasificarPalabraWiktionary(palabra) and clasificarPalabraPattern(palabra) != 'No se pudo clasificar':
 		#informar en un reporte que la clasificacion no existe en pattern
 		clasificacionWiktionary(palabra,listaPalabras)
+		definiciones[palabra] = obtenerDefinicion(palabra)
 		msg = 'Clasificacion no encontrada en Pattern'
 		reporteClasificaciones(msg)
 		print('wik2')
 	elif clasificarPalabraPattern(palabra) != clasificarPalabraWiktionary(palabra) and clasificarPalabraPattern(palabra) != 'No se pudo clasificar' and clasificarPalabraWiktionary(palabra) != 'No se pudo clasificar':
 		#informar en un reporte que la clasificacion no existe en pattern
 		clasificacionWiktionary(palabra,listaPalabras)
+		definiciones[palabra] = obtenerDefinicion(palabra)
 		msg = 'Clasificacion no encontrada en Pattern'
 		reporteClasificaciones(msg)
 		print('wik3')
@@ -129,6 +138,12 @@ def reporteClasificaciones(error):
 	f.write(error + '\n')
 	f.close
 
+def obtenerDefinicion(palabra):
+	w = Wiktionary(language="es")
+	a = w.search(palabra)
+	definicion = a.sections[3].content.split('1')[1].split('.2')[0].split('*')[0]
+	return definicion
+
 def recibirDatos():
 	'''
 		Retorna los datos y la configuracion para usar en la sopa de letras
@@ -157,6 +172,11 @@ def recibirMayMin(MayMin):
 	else:
 		return False
 
+def recibirDefiniciones():
+	'''
+		Devuelve un diccionario con la palabra como clave y la definicion como valor
+	'''
+	return definiciones
 
 layout = [
     [sg.Text('DIGOM: SOPA DE LETRAS', size=(32, 1), font=('Time New Roman', 14), background_color='#80cbc4')],
@@ -177,10 +197,12 @@ listaPalabrasAceptadas = []
 listaPalabras = ()
 listaAyuda= ()
 colores = ()
+definiciones= {}
 
 while True:
     button, values = window.Read()
     #print(values)
+    print(definiciones)
     if button == 'Salir':
         break
     else:    
