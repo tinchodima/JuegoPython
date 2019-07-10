@@ -230,22 +230,22 @@ while True:
 if button != 'Salir':
     listaPalabras = ([listaSustantivos, listaAdjetivos, listaVerbos], orientacion, ayuda)
 
-    #Envio de colores, si no se elije alguno se aplica el color por defecto#
+    #   Elección de colores, si no se elije alguno se aplica el color por defecto
     if (values['Sustantivos']==''):
         colorS='yellow'
-        sg.Popup('Como no se agrego un color especifico a los sustantivos tendrán su color por defecto')
+        sg.Popup('Como no se agrego un color especifico a los SUSTANTIVOS tendrán su color por defecto: amarillo')
     else:
         colorS= values['Sustantivos']  
 
     if (values['Adjetivos']==''):
         colorA= 'red'
-        sg.Popup('Como no se agrego un color especifico a los adjetivos tendrán su color por defecto')
+        sg.Popup('Como no se agrego un color especifico a los ADJETIVOS tendrán su color por defecto: rojo')
     else:
         colorA= values['Adjetivos']
 
     if (values['Verbos']==''):
         colorV='green'
-        sg.Popup('Como no se agrego un color especifico a los verbos tendrán su color por defecto') 
+        sg.Popup('Como no se agrego un color especifico a los VERBOS tendrán su color por defecto: verde') 
     else:
         colorV= values['Verbos']  
 
