@@ -132,11 +132,11 @@ def graficar(matriz, n, palabraSel, listaPal, ori, colores, palabrasEncontradas,
 
     if (ayuda):
         layout.append(
-        [sg.Text('Sustantivos', font=(10), background_color=colores['cSus']), sg.Text('   Adjetivos', font=(10), background_color=colores['cAdj']), sg.Text('    Verbos', font=(10), background_color=colores['cVer'])]
+        [sg.Text(' Sustantivos ', font=(10), background_color=colores['cSus']), sg.Text(' Adjetivos ', font=(10), background_color=colores['cAdj']), sg.Text(' Verbos ', font=(10), background_color=colores['cVer'])]
         )
-        layout.append(
-            [sg.Listbox(values=listaPalabras[0][0], size=(n+1, n-1)), sg.Listbox(values=listaPalabras[0][1], size=(n+1, n-1)), sg.Listbox(values=listaPalabras[0][2], size=(n+1, n-1))]
-        )
+        totalPalabras=[]
+        totalPalabras=listaPalabras[0][0]+listaPalabras[0][1]+listaPalabras[0][2]
+        layout[1].append(sg.Listbox(values=totalPalabras, size=(n+1, n-1))) #Se le agrega en la posicion 2 una lista con las palabras a encontrar
 
     window = sg.Window('Game', font=('Arial',10) ).Layout(layout).Finalize()
     g = window.FindElement('Graph')
@@ -171,7 +171,7 @@ def graficar(matriz, n, palabraSel, listaPal, ori, colores, palabrasEncontradas,
                 if posLetra == True: #Si está ya agregada la posicion de la letra se deseleccionará
                     try:
                         palabraSel.remove(matriz[y][x])
-                        palabraSel.remove(matriz[y][x]) #Para que elimine bien tiene que estar 2 vceces
+                        palabraSel.remove(matriz[y][x]) #Para que elimine bien tiene que estar 2 veces
                         g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color='white')
                     except(ValueError):
                         sg.Popup('no se puede deseleccionar una letra de una palabra ya encontrada')                        
