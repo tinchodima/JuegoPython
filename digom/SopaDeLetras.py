@@ -168,10 +168,13 @@ def graficar(matriz, n, palabraSel, listaPal, ori, colores, palabrasEncontradas,
                 palabraSel.append(matriz[y][x])  
                 g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color='black') #La letra elegida obtiene un contorno negro
                 if posLetra == True: #Si está ya agregada la posicion de la letra se deseleccionará
-                    palabraSel.remove(matriz[y][x])
-                    palabraSel.remove(matriz[y][x]) #Para que elimine bien tiene que estar 2 vceces
-                    g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color='white')
-                    
+                    try:
+                        palabraSel.remove(matriz[y][x])
+                        palabraSel.remove(matriz[y][x]) #Para que elimine bien tiene que estar 2 vceces
+                        g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color='white')
+                    except(ValueError):
+                        sg.Popup('no se puede deseleccionar una letra de una palabra ya encontrada')                        
+                        
             except(IndexError): #click fuera de la sopa de letras
                 g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color='none')
 
