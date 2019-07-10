@@ -107,6 +107,17 @@ def meterPalabraVerticalmente(palabra,matriz,n,listaPalabras):
             cont+=1    
     return matriz
 
+def posLetraMatriz(x,y): #se guarda la posicion de cada letra seleccionada en la matriz y si la posicion ya estaba devuelve true y no la agrega
+    pos=[]
+    pos.append(x)
+    pos.append(y)
+    if pos in listPosiciones:
+        listPosiciones.remove(pos)
+        return True
+    else:
+        listPosiciones.append(pos)
+    return False
+
 #--------------------------------------------------------------Crea el gráfico--------------------------------------------------------------#
 
 def graficar(matriz, n, palabraSel, listaPal, ori, colores, palabrasEncontradas, ayuda):
@@ -148,16 +159,22 @@ def graficar(matriz, n, palabraSel, listaPal, ori, colores, palabrasEncontradas,
             y = mouse[0]//BOX_SIZE
             x = mouse[1]//BOX_SIZE
             
-            if(aux==matriz[y][x] and len(palabraSel)!=0): #si se repite la letra se elimina de la lista. PROBLEMA SI ELIJE LA MISMA LETRA EN CASO DE PERRO 
+            '''if(aux==matriz[y][x] and len(palabraSel)!=0): #si se repite la letra se elimina de la lista. PROBLEMA SI ELIJE LA MISMA LETRA EN CASO DE PERRO 
                 palabraSel.pop()
-            aux=matriz[y][x]
+            aux=matriz[y][x]'''
 
+            posLetra=posLetraMatriz(x,y)
             try:                               
-                palabraSel.append(matriz[y][x])
+                palabraSel.append(matriz[y][x])  
                 g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color='black') #La letra elegida obtiene un contorno negro
+                if posLetra == True: #Si está ya agregada la posicion de la letra se deseleccionará
+                    palabraSel.remove(matriz[y][x])
+                    palabraSel.remove(matriz[y][x]) #Para que elimine bien tiene que estar 2 vceces
+                    g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color='white')
+                    
             except(IndexError): #click fuera de la sopa de letras
                 g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color='none')
-               
+
         if event == 'Buscar Palabra':
             auxX=x
             auxY=y
@@ -263,7 +280,8 @@ if len(listaPalabras) != 0:
                 palabra=list(listaPalabras[0][j][i])
                 meterPalabraVerticalmente(palabra, matriz, n, listaPalabras[0][j])
 
-    palabrasEncontradas=[]
-    palabraSeleccionada=[]
+    palabrasEncontradas=[] #lista de las palabras encontradas
+    palabraSeleccionada=[] #una lista con la palabra seleccionada
+    listPosiciones=[] #posicion de la letra seleccionada de la matriz
     llenarMatriz(matriz,n)
     graficar(matriz, n, palabraSeleccionada, listaPalabras[0], listaPalabras[1], colores, palabrasEncontradas, ayuda)
