@@ -108,7 +108,7 @@ def meterPalabraVerticalmente(palabra,matriz,n,listaPalabras):
             cont+=1    
     return matriz
 
-def posLetraMatriz(x,y): #se guarda la posicion de cada letra seleccionada en la matriz y si la posicion ya estaba devuelve true y no la agrega
+def posLetraMatriz(listPosiciones, x, y): #se guarda la posicion de cada letra seleccionada en la matriz y si la posicion ya estaba devuelve true y no la agrega
     pos=[]
     pos.append(x)
     pos.append(y)
@@ -119,6 +119,7 @@ def posLetraMatriz(x,y): #se guarda la posicion de cada letra seleccionada en la
         listPosiciones.append(pos)
     return False
 
+
 #--------------------------------------------------------------Crea el gráfico--------------------------------------------------------------#
 
 def graficar(matriz, n, palabraSel, listaPal, ori, colores, palabrasEncontradas, ayuda):
@@ -126,19 +127,19 @@ def graficar(matriz, n, palabraSel, listaPal, ori, colores, palabrasEncontradas,
 
     layout = [
     [sg.Text('DIGOM: Sopa de letras', font=(15), text_color='blue')],
-    [sg.Graph((n*30, n*30), (0, n*22.5), (n*22.5, 0), key='Graph', change_submits=True, drag_submits=False)],
-    [sg.Button('Buscar Palabra'), sg.Button('Ayuda'), sg.Button('Exit')]
+    [sg.Graph((n*30, n*30), (-2, n*22.5), (n*22.5, -2), key='Graph', change_submits=True, drag_submits=False)],
+    [sg.Text('Elegir un tipo de letra', text_color='blue')],
+    [sg.Button('Sustantivo', button_color=('black', colores['cSus'])), sg.Button('Adjetivo', button_color=('black', colores['cAdj'])), sg.Button('Verbo', button_color=('black', colores['cVer'] ))],
+    [sg.Text('Comprobar si la palabra es correcta', text_color='blue')],
+    [sg.Button('Comprobar Palabra'), sg.Button('Salir')]
     ]
-
+    
     if (ayuda):
-        layout.append(
-        [sg.Text(' Sustantivos ', font=(10), background_color=colores['cSus']), sg.Text(' Adjetivos ', font=(10), background_color=colores['cAdj']), sg.Text(' Verbos ', font=(10), background_color=colores['cVer'])]
-        )
         totalPalabras=[]
         totalPalabras=listaPalabras[0][0]+listaPalabras[0][1]+listaPalabras[0][2]
-        layout[1].append(sg.Listbox(values=totalPalabras, size=(n+1, n-1))) #Se le agrega en la posicion 2 una lista con las palabras a encontrar
+        layout[1].append(sg.Listbox(values=totalPalabras, size=(n+4, n+4))) #Se le agrega (en la posicion 2 de layout) una lista con las palabras a encontrar
 
-    window = sg.Window('Game', font=('Arial',10) ).Layout(layout).Finalize()
+    window = sg.Window('Game', font=('Arial', 10)).Layout(layout).Finalize()
     g = window.FindElement('Graph')
 
     #Dibuja la matriz en el gráfico
@@ -146,12 +147,29 @@ def graficar(matriz, n, palabraSel, listaPal, ori, colores, palabrasEncontradas,
         for j in range(n):            
             g.DrawText('{}'.format(matriz[i][j]), (i * BOX_SIZE + 12, j * BOX_SIZE + 12))
 
-    aux=''
+    auxColor='white' #Si no se elije un tipo de palabra no se pinta nada 
+    listPosiciones=[] #posicion de la letra seleccionada de la matriz
+    block=True #Si se elige un tipo de palabra ya no se podra elegir otro hasta que confirme palabra
+
     while True:
         event, values = window.Read()
 
-        if event == 'Exit':
+        if event == 'Salir':
             break
+
+        if event == 'Sustantivo' or event == 'Adjetivo' or event == 'Verbo':
+            if not block:
+                sg.Popup('Primero debes comprobar la palabra antes de cambiar el tipo')
+
+        if event == 'Sustantivo' and block:
+            auxColor= colores['cSus']
+            block=False
+        elif event == 'Adjetivo' and block:
+            auxColor= colores['cAdj']
+            block=False
+        elif event == 'Verbo' and block:
+            auxColor= colores['cVer']    
+            block=False
 
         mouse = values['Graph']
         if event == 'Graph':
@@ -159,71 +177,43 @@ def graficar(matriz, n, palabraSel, listaPal, ori, colores, palabrasEncontradas,
                 continue
             y = mouse[0]//BOX_SIZE
             x = mouse[1]//BOX_SIZE
-            
-            '''if(aux==matriz[y][x] and len(palabraSel)!=0): #si se repite la letra se elimina de la lista. PROBLEMA SI ELIJE LA MISMA LETRA EN CASO DE PERRO 
-                palabraSel.pop()
-            aux=matriz[y][x]'''
 
-            posLetra=posLetraMatriz(x,y)
-            try:                               
-                palabraSel.append(matriz[y][x])  
-                g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color='black') #La letra elegida obtiene un contorno negro
-                if posLetra == True: #Si está ya agregada la posicion de la letra se deseleccionará
-                    try:
-                        palabraSel.remove(matriz[y][x])
-                        palabraSel.remove(matriz[y][x]) #Para que elimine bien tiene que estar 2 veces
-                        g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color='white')
-                    except(ValueError):
-                        sg.Popup('no se puede deseleccionar una letra de una palabra ya encontrada')                        
-                        
+            posLetra=posLetraMatriz(listPosiciones, x, y)
+            try:  
+
+                if auxColor != 'white':
+                    palabraSel.append(matriz[y][x])
+                    g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color=auxColor) 
+
+                    if posLetra == True: #Si está ya agregada la posicion de la letra se deseleccionará
+                        try:
+                            palabraSel.remove(matriz[y][x])
+                            palabraSel.remove(matriz[y][x]) #Para que elimine bien tiene que estar 2 veces
+                            g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color='white')
+                        except(ValueError): #Reiniciar la lista de posiciones guardadas porque no se eligió ninguna letra todavía
+                            palabraSel=[]         
+
             except(IndexError): #click fuera de la sopa de letras
-                g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color='none')
+                print('fuera de rango')
 
-        if event == 'Buscar Palabra':
+        if len(palabraSel)==0 and auxColor == 'white': #Si no se elije una palabra se puede seguir cambiando entre tipos de palabras
+            block=True
+
+        if event == 'Comprobar Palabra' and len(palabraSel)!=0:
+            block=True
             auxX=x
             auxY=y
-            pal=''
-            ok=False #si ok es falso, la palabra no existe
+            pal='' 
 
             for element in palabraSel: # pal se queda con la palabra seleccionada
                 pal=pal+element
 
-            if(not pal in palabrasEncontradas):
-                for k in range(len(listaPal)): # recorre la lista de palabras (sus, adj, ver) para ver si se encuentra la palabra encontrada    
-                    for p in listaPal[k]:              
-                        if pal == p.upper():    
-                            if k==0: # la palabra encontrada es sustantivo
-                                if ori == True: # es horizontal
-                                    for x in range(len(pal)):
-                                        g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color=colores['cSus']) 
-                                        auxY-=1
-                                else: # es vertical
-                                    for x in range(len(pal)): 
-                                        g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color=colores['cSus'])
-                                        auxX-=1
-                            elif k==1: # la palabra encontrada es adjetivo
-                                if ori == True: # es horizontal
-                                    for x in range(len(pal)):
-                                        g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color=colores['cAdj']) 
-                                        auxY-=1
-                                else: # es vertical
-                                    for x in range(len(pal)): 
-                                        g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color=colores['cAdj'])
-                                        auxX-=1 
-                            else: # la palabra encontrada es verbo
-                                if ori == True: # es horizontal
-                                    for x in range(len(pal)):
-                                        g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color=colores['cVer']) 
-                                        auxY-=1
-                                else: # es vertical
-                                    for x in range(len(pal)): 
-                                        g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color=colores['cVer'])
-                                        auxX-=1
-                            sg.Popup("encontraste la palabra: "+pal)                                  
-                            ok=True
-
-                if ok==False: #La palabra no estaba dentro de la lista de palabras
-                    sg.Popup('La palabra "'+pal+'" no se encuentra dentro de la lista de palabras ingresadas', title="Palabra inexistente!", font="Arial", background_color="#CDCDCD")
+            if auxColor == colores['cSus']:
+                if pal.lower() in listaPalabras[0][0]: #Si la palabra elegida está en la lista de sustantivos se acepta
+                    sg.Popup("encontraste la palabra: "+pal)
+                else:
+                    sg.Popup("la palabra: "+pal+" no es un sustantivo")
+                    listPosiciones=[]
                     if ori == True:
                         for x in range(len(pal)):
                             g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color='white') 
@@ -232,22 +222,46 @@ def graficar(matriz, n, palabraSel, listaPal, ori, colores, palabrasEncontradas,
                         for x in range(len(pal)):
                             g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color='white')
                             auxX-=1
-            else:
-                sg.Popup('Ya encontraste esa palabra!')     
-                palabrasEncontradas.pop()
+                palabraSel=[]        
 
-            palabrasEncontradas.append(pal)
-            palabraSel=[] 
+            elif auxColor == colores['cAdj']:
+                if pal.lower() in listaPalabras[0][1]:
+                    sg.Popup("encontraste la palabra: "+pal)
+                else:
+                    sg.Popup("la palabra: "+pal+" no es un adjetivo")
+                    listPosiciones=[]
+                    if ori == True:
+                        for x in range(len(pal)):
+                            g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color='white') 
+                            auxY-=1
+                    else:
+                        for x in range(len(pal)):
+                            g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color='white')
+                            auxX-=1
+                palabraSel=[]        
 
-    window.Close() 
+            elif auxColor == colores['cVer']:
+                if pal.lower() in listaPalabras[0][2]:
+                    sg.Popup("encontraste la palabra: "+pal)
+                else:
+                    sg.Popup("la palabra: "+pal+" no es un verbo")
+                    listPosiciones=[]
+                    if ori == True:
+                        for x in range(len(pal)):
+                            g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color='white') 
+                            auxY-=1
+                    else:
+                        for x in range(len(pal)):
+                            g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color='white')
+                            auxX-=1
+                palabraSel=[]        
+            
 
 def recibirDatosConfiguracion():
     listaPalabras=[] #Contiene todas las palabras a ingresar a la sopa de letras    
     listaPalabras = vc.recibirDatos() #recibe una lista de listas desde la ventana configuracion
     colores = vc.recibirColores() #diccionario con colores de los tipos de letra
     return listaPalabras, colores
-
-
 
 
 #------------------------------------------------------------Seccion de Brian Gomez, aqui voy a toquetear tu programa------------------------------------------------------------#     
@@ -260,14 +274,8 @@ def mostrarDefinicionAlAzar(listaPalabras):
 	posP=random.randrage(len(listaPalabras[posL]))
 	definicion = listaPalabras[posL][posP]
 	return definicion
-	
-	
 
-
-#------------------------------------------------------------Solo el programa tocare no te ilusiones-----------------------------------------------------------------------------#     
-
-
-
+#------------------------------------------------------------Solo el programa tocare no te ilusiones-----------------------------------------------------------------------------#
 
 
 #------------------------------------------------------------PP------------------------------------------------------------#     
@@ -309,6 +317,6 @@ if len(listaPalabras) != 0:
 
     palabrasEncontradas=[] #lista de las palabras encontradas
     palabraSeleccionada=[] #una lista con la palabra seleccionada
-    listPosiciones=[] #posicion de la letra seleccionada de la matriz
     llenarMatriz(matriz,n)
     graficar(matriz, n, palabraSeleccionada, listaPalabras[0], listaPalabras[1], colores, palabrasEncontradas, ayuda)
+    window.Close() 
