@@ -3,6 +3,6 @@ Di María, Juan Martin
 Gomez, Agustin Brian
 
 Forma de ejecutar la sopa de letras:
-ejecutar el archivo "ventanaConfiguracion.py" con python 3.6 (por pattern)
+ejecutar el archivo "Digom.py" con python 3.6 (por pattern)
 
 funciona en sistemas windows o Linux.
