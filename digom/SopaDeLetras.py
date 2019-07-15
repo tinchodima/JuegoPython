@@ -22,7 +22,6 @@ def crearMatriz(n):
 #Llena todos los elementos (que no tienen palabras) de la matriz con letras al azar
 def llenarMatriz(matriz,n):
     for i in range(n):
-        matriz.append([])
         for j in range(n):
             if matriz[i][j] == "*":           
                 matriz[i][j]=random.choice(string.ascii_uppercase)
