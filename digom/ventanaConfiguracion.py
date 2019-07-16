@@ -166,11 +166,6 @@ def recibirTipoDeAyuda():
 	
 	return False
 	
-def recibirMayMin(MayMin):
-	if MayMin[0] == True:
-		return True
-	else:
-		return False
 
 def recibirDefiniciones():
 	'''
@@ -178,15 +173,16 @@ def recibirDefiniciones():
 	'''
 	return definiciones
 
+
+	
 layout = [
-    [sg.Text('DIGOM: SOPA DE LETRAS', size=(32, 1), font=('Time New Roman', 14), background_color='#80cbc4')],
-    [sg.Text('● Ingrese una palabra:', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'), sg.InputText(), sg.Submit('Agregar'), sg.Submit('Quitar')],
-    [sg.Multiline(key='dato', size=(70,1), font='Arial')],
-    [sg.Text('● Nivel de dificultad:     ', text_color='black', font=('Time New Roman', 11),background_color='#80cbc4'), sg.Radio('Sin ayuda ', "RADIO1", default=True, background_color='#80cbc4'), sg.Radio('Mostrar definiciones', "RADIO1", background_color='#80cbc4'), sg.Radio('Mostrar palabras a buscar', "RADIO1", background_color='#80cbc4')],
-    [sg.Text('● Orientación de las palabras:     ', text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'), sg.Radio('Horizontal', "RADIO2", default=True, background_color='#80cbc4'), sg.Radio('Vertical', "RADIO2", background_color='#80cbc4')],
-    [sg.Text('● Elegir colores',text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'), sg.ColorChooserButton('Sustantivos',button_color=('#FFFFFF','#03A9F4')), sg.ColorChooserButton('Adjetivos',button_color=('#FFFFFF','#03A9F4')), sg.ColorChooserButton('Verbos',button_color=('#FFFFFF','#03A9F4'))],
-    [sg.Text('● Tipo de letras',text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'),sg.Radio('Mayusculas ', "RADIO3", default=True, background_color='#80cbc4'),sg.Radio('Minusculas ', "RADIO3", default=False, background_color='#80cbc4')],
-    [sg.Submit('Generar sopa de letras'), sg.Cancel('Salir')]
+	[sg.Text('DIGOM: SOPA DE LETRAS', size=(32, 1), font=('Time New Roman', 14), background_color='#80cbc4')],
+	[sg.Text('● Ingrese una palabra:', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'), sg.InputText(), sg.Submit('Agregar'), sg.Submit('Quitar')],
+	[sg.Multiline(key='dato', size=(70,1), font='Arial')],
+	[sg.Text('● Nivel de dificultad:     ', text_color='black', font=('Time New Roman', 11),background_color='#80cbc4'), sg.Radio('Sin ayuda ', "RADIO1", default=True, background_color='#80cbc4'), sg.Radio('Mostrar definiciones', "RADIO1", background_color='#80cbc4'), sg.Radio('Mostrar palabras a buscar', "RADIO1", background_color='#80cbc4')],
+	[sg.Text('● Orientación de las palabras:     ', text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'), sg.Radio('Horizontal', "RADIO2", default=True, background_color='#80cbc4'), sg.Radio('Vertical', "RADIO2", background_color='#80cbc4')],
+	[sg.Text('● Elegir colores',text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'), sg.ColorChooserButton('Sustantivos',button_color=('#FFFFFF','#03A9F4')), sg.ColorChooserButton('Adjetivos',button_color=('#FFFFFF','#03A9F4')), sg.ColorChooserButton('Verbos',button_color=('#FFFFFF','#03A9F4'))],
+	[sg.Submit('Generar sopa de letras'), sg.Cancel('Salir')]
 ]
 window = sg.Window('Seminario de Lenguajes 2019: Python', font=('Arial', 10), background_color='#80cbc4').Layout(layout)
 
@@ -199,58 +195,61 @@ listaAyuda= ()
 colores = ()
 definiciones= {}
 
+
+
+
 while True:
-    button, values = window.Read()
-    #print(values)
-    print(definiciones)
-    if button == 'Salir':
-        break
-    else:    
-        listaAyuda= (values[1],values[2],values[3])
-        orientacion=values[4]
-        MayMin = (values[6])
-        if(values[1]):
-            ayuda=False
-        else:
-            ayuda=True 
+	button, values = window.Read()
+	#print(values)
+	print(definiciones)
+	if button == 'Salir':
+		break
+	else:    
+		listaAyuda= (values[1],values[2],values[3])
+		orientacion=values[4]
+		if(values[1]):
+			ayuda=False
+		else:
+			ayuda=True 
 
-        if button == 'Agregar':
-            comprobarWikPattern(values[0],listaPalabrasAceptadas)
-            mostrar = ', '.join(listaPalabrasAceptadas)
-            window.FindElement('dato').Update(mostrar)
+		if button == 'Agregar':
+			comprobarWikPattern(values[0],listaPalabrasAceptadas)
+			mostrar = ', '.join(listaPalabrasAceptadas)
+			window.FindElement('dato').Update(mostrar)
 
-        if button == 'Generar sopa de letras':
-            break
+		if button == 'Generar sopa de letras':
+			break
         
-        print('Adjetivos: ', listaAdjetivos)
-        print('Sustantivos: ', listaSustantivos)
-        print('Verbos: ', listaVerbos)
-        print(listaAyuda)
+		print('Adjetivos: ', listaAdjetivos)
+		print('Sustantivos: ', listaSustantivos)
+		print('Verbos: ', listaVerbos)
+		print(listaAyuda)
 
 if button != 'Salir':
-    listaPalabras = ([listaSustantivos, listaAdjetivos, listaVerbos], orientacion, ayuda)
+	listaPalabras = ([listaSustantivos, listaAdjetivos, listaVerbos], orientacion, ayuda)
 
-    #   Elección de colores, si no se elije alguno se aplica el color por defecto
-    if (values['Sustantivos']==''):
-        colorS='yellow'
-        #sg.Popup('Como no se agrego un color especifico a los SUSTANTIVOS tendrán su color por defecto: amarillo')
-    else:
-        colorS= values['Sustantivos']  
+	#   Elección de colores, si no se elije alguno se aplica el color por defecto
+	if (values['Sustantivos']==''):
+		colorS='yellow'
+		#sg.Popup('Como no se agrego un color especifico a los SUSTANTIVOS tendrán su color por defecto: amarillo')
+	else:
+		colorS= values['Sustantivos']  
 
-    if (values['Adjetivos']==''):
-        colorA= 'red'
-        #sg.Popup('Como no se agrego un color especifico a los ADJETIVOS tendrán su color por defecto: rojo')
-    else:
-        colorA= values['Adjetivos']
+	if (values['Adjetivos']==''):
+		colorA= 'red'
+		#sg.Popup('Como no se agrego un color especifico a los ADJETIVOS tendrán su color por defecto: rojo')
+	else:
+		colorA= values['Adjetivos']
 
-    if (values['Verbos']==''):
-        colorV='green'
-        #sg.Popup('Como no se agrego un color especifico a los VERBOS tendrán su color por defecto: verde') 
-    else:
-        colorV= values['Verbos']  
+	if (values['Verbos']==''):
+		colorV='green'
+		#sg.Popup('Como no se agrego un color especifico a los VERBOS tendrán su color por defecto: verde') 
+	else:
+		colorV= values['Verbos']  
 
-    colores = dict(cSus=colorS, cAdj=colorA, cVer=colorV)
+	colores = dict(cSus=colorS, cAdj=colorA, cVer=colorV)
     
 else:
-    listaPalabras=()
-    colores={}    
+	listaPalabras=()
+	colores={}    
+		
