@@ -152,11 +152,15 @@ class Digom:
 
     #--------------------------------------------------Método que crea el gráfico--------------------------------------------------#
     def graficar(self):
+        totalPalabras=[]
+        totalPalabras= self._listaPalabras[0][0] + self._listaPalabras[0][1] + self._listaPalabras[0][2]
+
         BOX_SIZE = 22 #tamaño de las cajas que contiene cada letra
 
         layout = [
         [sg.Text('DIGOM: Sopa de letras', font=(15), text_color='blue')],
         [sg.Graph((self.n*30, self.n*30), (-2, self.n*22.5), (self.n*22.5, -2), key='Graph', change_submits=True, drag_submits=False)],
+        [sg.Text('Total palabras a buscar: '+str(len(totalPalabras)), text_color='blue')],
         [sg.Text('Elegir un tipo de letra', text_color='blue')],
         [sg.Button('Sustantivo', button_color=('black', self.colores['cSus'])), sg.Button('Adjetivo', button_color=('black', self.colores['cAdj'])), sg.Button('Verbo', button_color=('black', self.colores['cVer'] ))],
         [sg.Text('Comprobar si la palabra es correcta', text_color='blue')],
@@ -164,8 +168,6 @@ class Digom:
         ]
         
         if (self.ayuda):
-            totalPalabras=[]
-            totalPalabras= self._listaPalabras[0][0] + self._listaPalabras[0][1] + self._listaPalabras[0][2]
             layout[1].append(sg.Listbox(values=totalPalabras, size=(self.n+4, self.n+4))) #Se le agrega (en la posicion 2 de layout) una lista con las palabras a encontrar
 
         window = sg.Window('Game', font=('Arial', 10)).Layout(layout).Finalize()
@@ -179,6 +181,7 @@ class Digom:
         auxColor='white' #Si no se elije un tipo de palabra no se pinta nada 
         listPosiciones=[] #posicion de la letra seleccionada de la matriz
         block=True #Si se elige un tipo de palabra ya no se podra elegir otro hasta que confirme palabra
+        totalPalabrasEncontradas=0
 
         while True:
             event, values = window.Read()
@@ -241,6 +244,7 @@ class Digom:
                 if auxColor == self.colores['cSus']:
                     if pal.lower() in self._listaPalabras[0][0]: #Si la palabra elegida está en la lista de sustantivos se acepta
                         sg.Popup("encontraste la palabra: "+pal)
+                        totalPalabrasEncontradas+=1
                     else:
                         sg.Popup("la palabra: "+pal+" no es un sustantivo")
                         listPosiciones=[]
@@ -256,6 +260,7 @@ class Digom:
                 elif auxColor == self.colores['cAdj']:
                     if pal.lower() in self._listaPalabras[0][1]:
                         sg.Popup("encontraste la palabra: "+pal)
+                        totalPalabrasEncontradas+=1
                     else:
                         sg.Popup("la palabra: "+pal+" no es un adjetivo")
                         listPosiciones=[]
@@ -271,6 +276,7 @@ class Digom:
                 elif auxColor == self.colores['cVer']:
                     if pal.lower() in self._listaPalabras[0][2]:
                         sg.Popup("encontraste la palabra: "+pal)
+                        totalPalabrasEncontradas+=1
                     else:
                         sg.Popup("la palabra: "+pal+" no es un verbo")
                         listPosiciones=[]
@@ -282,7 +288,10 @@ class Digom:
                             for x in range(len(pal)):
                                 g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color='white')
                                 auxX-=1
-                self.palabraSel=[]                 
+                self.palabraSel=[]
+
+            if len(totalPalabras) == totalPalabrasEncontradas:
+                sg.Popup('    Ganaste! Felicitaciones      ', title='GANASTE', font=(14))                     
 
     def posLetraMatriz(self, listPosiciones, x, y): #se guarda la posicion de cada letra seleccionada en la matriz y si la posicion ya estaba devuelve true y no la agrega
         pos=[]
