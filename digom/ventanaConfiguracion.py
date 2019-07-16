@@ -216,7 +216,11 @@ while True:
 			comprobarWikPattern(values[0],listaPalabrasAceptadas)
 			mostrar = ', '.join(listaPalabrasAceptadas)
 			window.FindElement('dato').Update(mostrar)
-
+		
+		if button == 'Quitar':
+			listaPalabrasAceptadas.remove(values[0])
+			listaSustantivos.remove(values[0])
+			
 		if button == 'Generar sopa de letras':
 			break
         
