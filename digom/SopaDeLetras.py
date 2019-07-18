@@ -149,28 +149,36 @@ class Digom:
                 break
             else:
                 cont+=1
-
+       
     #--------------------------------------------------Método que crea el gráfico--------------------------------------------------#
     def graficar(self):
-        totalPalabras=[]
-        totalPalabras= self._listaPalabras[0][0] + self._listaPalabras[0][1] + self._listaPalabras[0][2]
+        totalPalabras = []
+        totalPalabras = self._listaPalabras[0][0] + self._listaPalabras[0][1] + self._listaPalabras[0][2]
 
         BOX_SIZE = 22 #tamaño de las cajas que contiene cada letra
-
         layout = [
-        [sg.Text('DIGOM: Sopa de letras', font=(15), text_color='blue')],
+        [sg.T('DIGOM: Sopa de letras', font=(15), text_color='blue', background_color='White')],
+        [sg.T('Sustantivos: '+str(len(self._listaPalabras[0][0])), text_color='blue', background_color='White'),sg.T('Adjetivos: '+str(len(self._listaPalabras[0][1])), text_color='blue', background_color='White'), sg.T('Verbos: '+str(len(self._listaPalabras[0][2])), text_color='blue', background_color='White' )],
         [sg.Graph((self.n*30, self.n*30), (-2, self.n*22.5), (self.n*22.5, -2), key='Graph', change_submits=True, drag_submits=False)],
-        [sg.Text('Total palabras a buscar: '+str(len(totalPalabras)), text_color='blue')],
-        [sg.Text('Elegir un tipo de letra', text_color='blue')],
-        [sg.Button('Sustantivo', button_color=('black', self.colores['cSus'])), sg.Button('Adjetivo', button_color=('black', self.colores['cAdj'])), sg.Button('Verbo', button_color=('black', self.colores['cVer'] ))],
-        [sg.Text('Comprobar si la palabra es correcta', text_color='blue')],
+        [sg.T('Elegir un tipo de letra', text_color='blue', background_color='White'), sg.Button('Sustantivo', button_color=('black', self.colores['cSus'])), sg.Button('Adjetivo', button_color=('black', self.colores['cAdj'])), sg.Button('Verbo', button_color=('black', self.colores['cVer'] ))],
         [sg.Button('Comprobar Palabra'), sg.Button('Salir')]
-        ]
-        
-        if (self.ayuda):
-            layout[1].append(sg.Listbox(values=totalPalabras, size=(self.n+4, self.n+4))) #Se le agrega (en la posicion 2 de layout) una lista con las palabras a encontrar
+        ]        
 
-        window = sg.Window('Game', font=('Arial', 10)).Layout(layout).Finalize()
+        if self.ayuda == 2: #lista de palabras
+            mostrarPalabras = [
+                [sg.Listbox(values=[], key='ayudaPal', size=(self.n+4, self.n+4))],
+                [sg.Button('Ayuda')]
+                ]
+            layout[2].append(sg.Frame('Palabras a encontrar', mostrarPalabras, font='Any 10', title_color='blue', size=(self.n*2, self.n*10)))
+
+        elif self.ayuda == 3: #definiciones de palabras
+            definicionPalabra = [
+                [sg.Multiline('', key='ayudaDef')],
+                [sg.Button('Ayuda')]
+                ]
+            layout[2].append(sg.Frame('Definicion de palabra al azar', definicionPalabra, font='Any 10', title_color='blue', size=(self.n*2, self.n*10)))
+
+        window = sg.Window('Game', font=('Arial', 10), background_color='White').Layout(layout).Finalize()
         g = window.FindElement('Graph')
 
         #Dibuja la matriz en el gráfico
@@ -182,6 +190,7 @@ class Digom:
         listPosiciones=[] #posicion de la letra seleccionada de la matriz
         block=True #Si se elige un tipo de palabra ya no se podra elegir otro hasta que confirme palabra
         totalPalabrasEncontradas=0
+        textoDefinicion='soy una definicion de una palabra'
 
         while True:
             event, values = window.Read()
@@ -189,11 +198,20 @@ class Digom:
             if event == 'Salir':
                 window.Close()
                 break
+            
+            #Botones de ayuda
+            if event == 'Ayuda':
+                if self.ayuda == 3:
+                    window.FindElement('ayudaDef').Update(textoDefinicion)
+                elif self.ayuda == 2:
+                    window.FindElement('ayudaPal').Update(totalPalabras)
 
+            #si apreta un tipo de palabra y quiere cambiarlo cuando ya eligio aluna palabra
             if event == 'Sustantivo' or event == 'Adjetivo' or event == 'Verbo':
                 if not block:
                     sg.Popup('Primero debes comprobar la palabra antes de cambiar el tipo')    
-
+            
+            #Apreta en los botones de tipo de palabra
             if event == 'Sustantivo' and block:
                 auxColor= self.colores['cSus']
                 block=False
@@ -211,9 +229,10 @@ class Digom:
                 y = mouse[0]//BOX_SIZE
                 x = mouse[1]//BOX_SIZE
 
+                #agrega la posicion marcada en una lista y la busca si ay estaba en la lista devuelve true
                 posLetra= self.posLetraMatriz(listPosiciones, x, y)
-                try:  
 
+                try:  
                     if auxColor != 'white':
                         self.palabraSel.append(self.matriz[y][x])
                         g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color=auxColor) 
@@ -224,12 +243,14 @@ class Digom:
                                 self.palabraSel.remove(self.matriz[y][x]) #Para que elimine bien tiene que estar 2 veces
                                 g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color='white')
                             except(ValueError): #Reiniciar la lista de posiciones guardadas porque no se eligió ninguna letra todavía
-                                self.palabraSel=[]         
+                                self.palabraSel=[] 
 
-                except(IndexError): #click fuera de la sopa de letras
+                #click fuera de la sopa de letras
+                except(IndexError): 
                     print('fuera de rango')
 
-            if len(self.palabraSel)==0: #Si no se elije una palabra se puede seguir cambiando entre tipos de palabras
+            #Si no se elije una palabra se puede seguir cambiando entre tipos de palabras
+            if len(self.palabraSel)==0: 
                 block=True
 
             if event == 'Comprobar Palabra' and len(self.palabraSel)!=0:
@@ -288,12 +309,13 @@ class Digom:
                             for x in range(len(pal)):
                                 g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color='white')
                                 auxX-=1
-                self.palabraSel=[]
+                self.palabraSel=[]            
 
             if len(totalPalabras) == totalPalabrasEncontradas:
-                sg.Popup('    Ganaste! Felicitaciones      ', title='GANASTE', font=(14))                     
+                sg.Popup('    Ganaste! Felicitaciones        ', title='GANASTE', font=(16))    
 
-    def posLetraMatriz(self, listPosiciones, x, y): #se guarda la posicion de cada letra seleccionada en la matriz y si la posicion ya estaba devuelve true y no la agrega
+    #se guarda la posicion de cada letra seleccionada en la matriz y si la posicion ya estaba devuelve true y no la agrega
+    def posLetraMatriz(self, listPosiciones, x, y): 
         pos=[]
         pos.append(x)
         pos.append(y)
@@ -303,7 +325,6 @@ class Digom:
         else:
             listPosiciones.append(pos)
         return False
-
 #------------------------------------------------------------Seccion de Brian Gomez, aqui voy a toquetear tu programa------------------------------------------------------------#     
 
 '''
