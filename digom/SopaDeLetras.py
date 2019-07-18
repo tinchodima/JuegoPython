@@ -15,8 +15,10 @@ class Digom:
         _listaPalabras= self.recibirPalabras()
         colores= self.recibirColores()
         ori= self.recibirOrientacion()
+        #tipografia= self.recibirTipografia()
         n= self.sacarMax()
         matriz= self.crearMatriz()
+        self.mayOmin=False #mayOmin en true es mayuscula y false en minuscula
         self.ayuda= self._listaPalabras[2]
         self.palabrasEncontradas= [] #lista de las palabras encontradas
         self.palabraSel= [] #lista con la palabra seleccionada
@@ -34,6 +36,9 @@ class Digom:
 
     def recibirOrientacion(self):
         self.ori = self._listaPalabras[1]
+
+    '''def recibirTipografia(self):
+        self.tipografia = vc.recibirTipografia() '''   
     
     def sacarMax(self):
         max=0
@@ -60,8 +65,11 @@ class Digom:
     def llenarMatriz(self):
         for i in range(self.n):
             for j in range(self.n):
-                if self.matriz[i][j] == "*":           
-                    self.matriz[i][j]=random.choice(string.ascii_uppercase)
+                if self.matriz[i][j] == "*": 
+                    if self.mayOmin:          
+                        self.matriz[i][j]=random.choice(string.ascii_uppercase)
+                    else:
+                        self.matriz[i][j]=random.choice(string.ascii_lowercase)
 
     def meterPalabrasEnMatriz(self):
         for j in range(3):
@@ -95,8 +103,11 @@ class Digom:
                     x=x+1
                     i=i+1
             if lon == i: #Si todos los espacios tienen "*" entonces se procederá a escribir la palabra
-                for p in palabra:                       
-                    self.matriz[auxX][auxY]= str(p.upper())
+                for p in palabra:
+                    if self.mayOmin:                       
+                        self.matriz[auxX][auxY]= str(p.upper())
+                    else:
+                        self.matriz[auxX][auxY]= str(p.lower())   
                     auxX+=1
                 ok=True   
             if ok == True: #Si ok = True significa que la palabra fue agregada, sino tendrá que buscar nuevas coordenadas
@@ -134,8 +145,11 @@ class Digom:
                     y=y+1
                     i=i+1       
             if lon == i: #Si todos los espacios tienen "*" entonces se procederá a escribir la palabra
-                for p in palabra:                       
-                    self.matriz[auxX][auxY]= str(p.upper())
+                for p in palabra:
+                    if self.mayOmin:                       
+                        self.matriz[auxX][auxY]= str(p.upper())
+                    else:
+                        self.matriz[auxX][auxY]= str(p.lower())
                     auxY+=1
                 ok=True   
             if ok == True: #Si ok = True significa que la palabra fue agregada, sino tendrá que buscar nuevas coordenadas
