@@ -188,7 +188,6 @@ class Digom:
     def graficar(self):
         totalPalabras = []
         totalPalabras = self.listaPalabrasAceptadas['sus'] + self.listaPalabrasAceptadas['adj'] + self.listaPalabrasAceptadas['ver']
-        print(totalPalabras) ##############
 
         BOX_SIZE = 22 #tamaño de las cajas que contiene cada letra
         layout = [
@@ -226,9 +225,7 @@ class Digom:
         block=True #Si se elige un tipo de palabra ya no se podra elegir otro hasta que confirme palabra
         totalPalabrasEncontradas=0
         textoDefinicion='soy una definicion de una palabra'
-        print(self.listaPalabrasAceptadas['sus'] )
-        print(self.listaPalabrasAceptadas['adj'] )
-        print(self.listaPalabrasAceptadas['ver'] )
+        
         while True:
             event, values = window.Read()
 
