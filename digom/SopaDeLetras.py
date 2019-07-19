@@ -15,10 +15,10 @@ class Digom:
         _listaPalabras= self.recibirPalabras()
         colores= self.recibirColores()
         ori= self.recibirOrientacion()
-        self.tipografia= 'arial' #tipografia= self.recibirTipografia()
-        self.cantPalAgregar= [3,2,1] #cantidadPalabrasAgregar= self.recibirListaCantidad()
         n= self.sacarMax()
         matriz= self.crearMatriz()
+        self.tipografia= 'arial' #tipografia= self.recibirTipografia()
+        self.cantPalAgregar= [3,2,1] #cantidadPalabrasAgregar= self.recibirListaCantidad()
         self.listaPalabrasAceptadas= {'sus':[],'adj':[],'ver':[]}
         self.mayOmin=True #mayOmin en true es mayuscula y false en minuscula
         self.ayuda= self._listaPalabras[2]
