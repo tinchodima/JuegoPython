@@ -15,10 +15,12 @@ class Digom:
         _listaPalabras= self.recibirPalabras()
         colores= self.recibirColores()
         ori= self.recibirOrientacion()
-        #tipografia= self.recibirTipografia()
+        self.tipografia= 'arial' #tipografia= self.recibirTipografia()
+        self.cantPalAgregar= [3,2,1] #cantidadPalabrasAgregar= self.recibirListaCantidad()
         n= self.sacarMax()
         matriz= self.crearMatriz()
-        self.mayOmin=False #mayOmin en true es mayuscula y false en minuscula
+        self.listaPalabrasAceptadas= {'sus':[],'adj':[],'ver':[]}
+        self.mayOmin=True #mayOmin en true es mayuscula y false en minuscula
         self.ayuda= self._listaPalabras[2]
         self.palabrasEncontradas= [] #lista de las palabras encontradas
         self.palabraSel= [] #lista con la palabra seleccionada
@@ -38,7 +40,11 @@ class Digom:
         self.ori = self._listaPalabras[1]
 
     '''def recibirTipografia(self):
-        self.tipografia = vc.recibirTipografia() '''   
+        self.tipografia = vc.recibirTipografia()
+        
+    def recibirListaCantidad(self):
+        self.cantPalAgregar= vc.recibirListaCantidad() #lista=[2,3,1] cantidad de palabras a agregar de los sus, adj y ver    
+         '''   
     
     def sacarMax(self):
         max=0
@@ -72,13 +78,27 @@ class Digom:
                         self.matriz[i][j]=random.choice(string.ascii_lowercase)
 
     def meterPalabrasEnMatriz(self):
-        for j in range(3):
-            for i in range(len(self._listaPalabras[0][j])):
-                palabra=list(self._listaPalabras[0][j][i])
+        listaPalCopia=self._listaPalabras[0].copy()
+        for i in range(3):
+            while self.cantPalAgregar[i] > 0 and len(listaPalCopia[i]) != 0:
+                numRandom = random.randrange(len(listaPalCopia[i])) #agrega de las palabras ingresadas la cantidad indicada eligiendo al azar
+                palabra = list(listaPalCopia[i][numRandom])
+                self.aceptarPalabra(i,palabra)
+
                 if self.ori:
-                    self.meterPalabraHorizontalmente(palabra, self._listaPalabras[0][j]) #Si ori es true la palabra se mete horizontal
+                    self.meterPalabraHorizontalmente(palabra, self._listaPalabras[0][i]) #Si ori es true la palabra se mete horizontal
                 else:
-                    self.meterPalabraVerticalmente(palabra, self._listaPalabras[0][j]) #Si ori es false la palabra se mete vertical                            
+                    self.meterPalabraVerticalmente(palabra, self._listaPalabras[0][i]) #Si ori es false la palabra se mete vertical
+                self.cantPalAgregar[i] = self.cantPalAgregar[i] -1
+                listaPalCopia[i].pop(numRandom)
+
+    def aceptarPalabra(self, i, palabra):            
+        if i==0:
+            self.listaPalabrasAceptadas['sus'].append(palabra)
+        elif i==1:
+            self.listaPalabrasAceptadas['adj'].append(palabra)  
+        else:
+            self.listaPalabrasAceptadas['ver'].append(palabra)        
 
     #La palabra se ingresara verticalmente
     def meterPalabraHorizontalmente(self, palabra, listaPalabras):
@@ -167,14 +187,15 @@ class Digom:
     #--------------------------------------------------Método que crea el gráfico--------------------------------------------------#
     def graficar(self):
         totalPalabras = []
-        totalPalabras = self._listaPalabras[0][0] + self._listaPalabras[0][1] + self._listaPalabras[0][2]
+        totalPalabras = self.listaPalabrasAceptadas['sus'] + self.listaPalabrasAceptadas['adj'] + self.listaPalabrasAceptadas['ver']
+        print(totalPalabras) ##############
 
         BOX_SIZE = 22 #tamaño de las cajas que contiene cada letra
         layout = [
-        [sg.T('DIGOM: Sopa de letras', font=(15), text_color='blue', background_color='White')],
-        [sg.T('Sustantivos: '+str(len(self._listaPalabras[0][0])), text_color='blue', background_color='White'),sg.T('Adjetivos: '+str(len(self._listaPalabras[0][1])), text_color='blue', background_color='White'), sg.T('Verbos: '+str(len(self._listaPalabras[0][2])), text_color='blue', background_color='White' )],
+        [sg.T('DIGOM: Sopa de letras', font=(self.tipografia, 15), text_color='blue', background_color='White')],
+        [sg.T('Sustantivos: '+str(len(self.listaPalabrasAceptadas['sus']))+'  -', text_color='blue', background_color='White', font=(self.tipografia,10)),sg.T('Adjetivos: '+str(len(self.listaPalabrasAceptadas['adj']))+'  -', text_color='blue', background_color='White', font=(self.tipografia,10)), sg.T('Verbos: '+str(len(self.listaPalabrasAceptadas['ver'])), text_color='blue', background_color='White', font=(self.tipografia,10))],
         [sg.Graph((self.n*30, self.n*30), (-2, self.n*22.5), (self.n*22.5, -2), key='Graph', change_submits=True, drag_submits=False)],
-        [sg.T('Elegir un tipo de letra', text_color='blue', background_color='White'), sg.Button('Sustantivo', button_color=('black', self.colores['cSus'])), sg.Button('Adjetivo', button_color=('black', self.colores['cAdj'])), sg.Button('Verbo', button_color=('black', self.colores['cVer'] ))],
+        [sg.T('Elegir un tipo de letra', text_color='blue', background_color='White', font=(self.tipografia,10)), sg.Button('Sustantivo', button_color=('black', self.colores['cSus'])), sg.Button('Adjetivo', button_color=('black', self.colores['cAdj'])), sg.Button('Verbo', button_color=('black', self.colores['cVer']))],
         [sg.Button('Comprobar Palabra'), sg.Button('Salir')]
         ]        
 
@@ -183,7 +204,7 @@ class Digom:
                 [sg.Listbox(values=[], key='ayudaPal', size=(self.n+4, self.n+4))],
                 [sg.Button('Ayuda')]
                 ]
-            layout[2].append(sg.Frame('Palabras a encontrar', mostrarPalabras, font='Any 10', title_color='blue', size=(self.n*2, self.n*10)))
+            layout[2].append(sg.Frame('Palabras a encontrar', mostrarPalabras, font=(self.tipografia, 10), title_color='blue', size=(self.n*2, self.n*10)))
 
         elif self.ayuda == 3: #definiciones de palabras
             definicionPalabra = [
@@ -192,20 +213,22 @@ class Digom:
                 ]
             layout[2].append(sg.Frame('Definicion de palabra al azar', definicionPalabra, font='Any 10', title_color='blue', size=(self.n*2, self.n*10)))
 
-        window = sg.Window('Game', font=('Arial', 10), background_color='White').Layout(layout).Finalize()
+        window = sg.Window('Game', font=(self.tipografia, 10), background_color='White').Layout(layout).Finalize()
         g = window.FindElement('Graph')
 
         #Dibuja la matriz en el gráfico
         for i in range(self.n):
             for j in range(self.n):            
-                g.DrawText('{}'.format(self.matriz[i][j]), (i * BOX_SIZE + 12, j * BOX_SIZE + 12))
+                g.DrawText('{}'.format(self.matriz[i][j], font=(self.tipografia, 15)), (i * BOX_SIZE + 12, j * BOX_SIZE + 12))
 
         auxColor='white' #Si no se elije un tipo de palabra no se pinta nada 
         listPosiciones=[] #posicion de la letra seleccionada de la matriz
         block=True #Si se elige un tipo de palabra ya no se podra elegir otro hasta que confirme palabra
         totalPalabrasEncontradas=0
         textoDefinicion='soy una definicion de una palabra'
-
+        print(self.listaPalabrasAceptadas['sus'] )
+        print(self.listaPalabrasAceptadas['adj'] )
+        print(self.listaPalabrasAceptadas['ver'] )
         while True:
             event, values = window.Read()
 
@@ -277,7 +300,7 @@ class Digom:
                     pal=pal+element
 
                 if auxColor == self.colores['cSus']:
-                    if pal.lower() in self._listaPalabras[0][0]: #Si la palabra elegida está en la lista de sustantivos se acepta
+                    if list(pal.lower()) in self.listaPalabrasAceptadas['sus']: #Si la palabra elegida está en la lista de sustantivos se acepta
                         sg.Popup("encontraste la palabra: "+pal)
                         totalPalabrasEncontradas+=1
                     else:
@@ -293,7 +316,7 @@ class Digom:
                                 auxX-=1                        
 
                 elif auxColor == self.colores['cAdj']:
-                    if pal.lower() in self._listaPalabras[0][1]:
+                    if list(pal.lower()) in self.listaPalabrasAceptadas['adj']:
                         sg.Popup("encontraste la palabra: "+pal)
                         totalPalabrasEncontradas+=1
                     else:
@@ -309,11 +332,11 @@ class Digom:
                                 auxX-=1                        
 
                 elif auxColor == self.colores['cVer']:
-                    if pal.lower() in self._listaPalabras[0][2]:
+                    if list(pal.lower()) in self.listaPalabrasAceptadas['ver']:
                         sg.Popup("encontraste la palabra: "+pal)
                         totalPalabrasEncontradas+=1
                     else:
-                        sg.Popup("la palabra: "+pal+" no es un verbo")
+                        sg.Popup("la palabra "+pal+" no es un verbo")
                         listPosiciones=[]
                         if self.ori == True:
                             for x in range(len(pal)):
@@ -326,7 +349,7 @@ class Digom:
                 self.palabraSel=[]            
 
             if len(totalPalabras) == totalPalabrasEncontradas:
-                sg.Popup('    Ganaste! Felicitaciones        ', title='GANASTE', font=(16))    
+                sg.Popup('    Ganaste! Felicitaciones          ', title='GANASTE', font=(16))    
 
     #se guarda la posicion de cada letra seleccionada en la matriz y si la posicion ya estaba devuelve true y no la agrega
     def posLetraMatriz(self, listPosiciones, x, y): 
