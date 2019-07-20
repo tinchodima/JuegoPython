@@ -1,7 +1,7 @@
-#Gomez, Brian Agustin
-#Di Maria, Juan Martin
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
+# Gomez, Brian Agustin
+# Di Maria, Juan Martin
+# !/usr/bin/python3
+#  -*- coding: utf-8 -*-
 
 import random
 import string
@@ -20,7 +20,7 @@ class Digom:
         self.tipografia= 'arial' #tipografia= self.recibirTipografia()
         self.cantPalAgregar= [3,2,1] #cantidadPalabrasAgregar= self.recibirListaCantidad()
         self.listaPalabrasAceptadas= {'sus':[],'adj':[],'ver':[]}
-        self.mayOmin=True #mayOmin en true es mayuscula y false en minuscula
+        self.mayOmin=False #mayOmin en true es mayuscula y false en minuscula
         self.ayuda= self._listaPalabras[2]
         self.palabrasEncontradas= [] #lista de las palabras encontradas
         self.palabraSel= [] #lista con la palabra seleccionada
@@ -59,7 +59,7 @@ class Digom:
         else:
             self.n=0     
 
-    #Creo una matriz de n * n con todos sus elementos siendo "*"
+    # Creo una matriz de n * n con todos sus elementos siendo "*"
     def crearMatriz(self):
         self.matriz=[]
         for i in range(self.n):
@@ -67,7 +67,7 @@ class Digom:
             for j in range(self.n):           
                 self.matriz[i].append("*")
 
-    #Llena todos los elementos (que no tienen palabras) de la matriz con letras al azar
+    # Llena todos los elementos (que no tienen palabras) de la matriz con letras al azar
     def llenarMatriz(self):
         for i in range(self.n):
             for j in range(self.n):
@@ -84,11 +84,13 @@ class Digom:
                 numRandom = random.randrange(len(listaPalCopia[i])) #agrega de las palabras ingresadas la cantidad indicada eligiendo al azar
                 palabra = list(listaPalCopia[i][numRandom])
                 self.aceptarPalabra(i,palabra)
-
+                # Si ori es true la palabra se mete horizontal
                 if self.ori:
-                    self.meterPalabraHorizontalmente(palabra, self._listaPalabras[0][i]) #Si ori es true la palabra se mete horizontal
+                    self.meterPalabraHorizontalmente(palabra, self._listaPalabras[0][i]) 
+                # Si ori es false la palabra se mete vertical    
                 else:
-                    self.meterPalabraVerticalmente(palabra, self._listaPalabras[0][i]) #Si ori es false la palabra se mete vertical
+                    self.meterPalabraVerticalmente(palabra, self._listaPalabras[0][i])
+            
                 self.cantPalAgregar[i] = self.cantPalAgregar[i] -1
                 listaPalCopia[i].pop(numRandom)
 
@@ -100,7 +102,7 @@ class Digom:
         else:
             self.listaPalabrasAceptadas['ver'].append(palabra)        
 
-    #La palabra se ingresara verticalmente
+    # La palabra se ingresara verticalmente
     def meterPalabraHorizontalmente(self, palabra, listaPalabras):
         ok=False #El ok determina si la palabra fue escrita en la sopa de letras
         x=random.randrange(self.n)
@@ -142,7 +144,7 @@ class Digom:
             else:
                 cont+=1
 
-    #La palabra se ingresara verticalmente
+    # La palabra se ingresara verticalmente
     def meterPalabraVerticalmente(self, palabra, listaPalabras):
         ok=False #El ok determina si la palabra fue escrita en la sopa de letras
         x=random.randrange(self.n)
@@ -215,16 +217,20 @@ class Digom:
         window = sg.Window('Game', font=(self.tipografia, 10), background_color='White').Layout(layout).Finalize()
         g = window.FindElement('Graph')
 
-        #Dibuja la matriz en el gráfico
+        # Dibuja la matriz en el gráfico
         for i in range(self.n):
             for j in range(self.n):            
                 g.DrawText('{}'.format(self.matriz[i][j], font=(self.tipografia, 15)), (i * BOX_SIZE + 12, j * BOX_SIZE + 12))
 
         auxColor='white' #Si no se elije un tipo de palabra no se pinta nada 
-        listPosiciones=[] #posicion de la letra seleccionada de la matriz
+        marcada=[] #posicion de la letra seleccionada de la matriz (lista que se usa para deseleccionar cuando se vuelve a clickear)
         block=True #Si se elige un tipo de palabra ya no se podra elegir otro hasta que confirme palabra
-        totalPalabrasEncontradas=0
+        susEncontrados=0
+        adjEncontrados=0
+        verEncontrados=0
         textoDefinicion='soy una definicion de una palabra'
+        listaPosiciones=[] #posiciones elegidas por el usuario en el gráfico
+        win=False
         
         while True:
             event, values = window.Read()
@@ -233,19 +239,21 @@ class Digom:
                 window.Close()
                 break
             
-            #Botones de ayuda
-            if event == 'Ayuda':
+            # Botones de ayuda
+            if event == 'Ayuda' and not win:
                 if self.ayuda == 3:
                     window.FindElement('ayudaDef').Update(textoDefinicion)
                 elif self.ayuda == 2:
                     window.FindElement('ayudaPal').Update(totalPalabras)
 
-            #si apreta un tipo de palabra y quiere cambiarlo cuando ya eligio aluna palabra
+            # Si apreta un tipo de palabra y quiere cambiarlo cuando ya eligio alguna palabra
             if event == 'Sustantivo' or event == 'Adjetivo' or event == 'Verbo':
                 if not block:
-                    sg.Popup('Primero debes comprobar la palabra antes de cambiar el tipo')    
+                    sg.Popup('Primero debes comprobar la palabra antes de cambiar el tipo')
+                elif win:
+                    sg.Popup('Ganaste, para salir presione "Salir"')        
             
-            #Apreta en los botones de tipo de palabra
+            # Apreta en los botones de tipo de palabra
             if event == 'Sustantivo' and block:
                 auxColor= self.colores['cSus']
                 block=False
@@ -257,14 +265,15 @@ class Digom:
                 block=False
 
             mouse = values['Graph']
-            if event == 'Graph':
+            if event == 'Graph' and not win:
                 if mouse == (None, None):
                     continue
                 y = mouse[0]//BOX_SIZE
                 x = mouse[1]//BOX_SIZE
 
-                #agrega la posicion marcada en una lista y la busca si ay estaba en la lista devuelve true
-                posLetra= self.posLetraMatriz(listPosiciones, x, y)
+                # Agrega la posicion marcada en una lista y la busca si ya estaba en la lista devuelve "true"
+                posLetra= self.posLetraMatrizMarcada(marcada, x, y)
+                self.guardarPosicion(listaPosiciones, x, y)
 
                 try:  
                     if auxColor != 'white':
@@ -278,12 +287,13 @@ class Digom:
                                 g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color='white')
                             except(ValueError): #Reiniciar la lista de posiciones guardadas porque no se eligió ninguna letra todavía
                                 self.palabraSel=[] 
+                            self.eliminarPos(listaPosiciones, x, y)
 
-                #click fuera de la sopa de letras
+                # Click fuera de la sopa de letras
                 except(IndexError): 
                     print('fuera de rango')
 
-            #Si no se elije una palabra se puede seguir cambiando entre tipos de palabras
+            # Si no se elije una palabra se puede seguir cambiando entre tipos de palabras
             if len(self.palabraSel)==0: 
                 block=True
 
@@ -293,72 +303,78 @@ class Digom:
                 auxY=y
                 pal='' 
 
-                for element in self.palabraSel: # pal se queda con la palabra seleccionada
+                # pal se queda con la palabra seleccionada
+                for element in self.palabraSel: 
                     pal=pal+element
 
-                if auxColor == self.colores['cSus']:
-                    if list(pal.lower()) in self.listaPalabrasAceptadas['sus']: #Si la palabra elegida está en la lista de sustantivos se acepta
+                # Con el color me doy cuenta del tipo de palabra que eligio
+                if auxColor == self.colores['cSus']: 
+                    if list(pal.lower()) in self.listaPalabrasAceptadas['sus']: # Si la palabra elegida está en la lista de sustantivos se acepta
                         sg.Popup("encontraste la palabra: "+pal)
-                        totalPalabrasEncontradas+=1
+                        susEncontrados+=1
                     else:
-                        sg.Popup("la palabra: "+pal+" no es un sustantivo")
-                        listPosiciones=[]
-                        if self.ori == True:
-                            for x in range(len(pal)):
-                                g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color='white') 
-                                auxY-=1
-                        else:
-                            for x in range(len(pal)):
-                                g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color='white')
-                                auxX-=1                        
+                        sg.Popup("la palabra "+pal+" no es un sustantivo")
+                        self.borrarPosiciones(listaPosiciones, g, BOX_SIZE, marcada)
+                        listaPosiciones=[]                        
 
                 elif auxColor == self.colores['cAdj']:
                     if list(pal.lower()) in self.listaPalabrasAceptadas['adj']:
                         sg.Popup("encontraste la palabra: "+pal)
-                        totalPalabrasEncontradas+=1
+                        adjEncontrados+=1
                     else:
-                        sg.Popup("la palabra: "+pal+" no es un adjetivo")
-                        listPosiciones=[]
-                        if self.ori == True:
-                            for x in range(len(pal)):
-                                g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color='white') 
-                                auxY-=1
-                        else:
-                            for x in range(len(pal)):
-                                g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color='white')
-                                auxX-=1                        
+                        sg.Popup("la palabra "+pal+" no es un adjetivo")
+                        self.borrarPosiciones(listaPosiciones, g, BOX_SIZE, marcada)
+                        listaPosiciones=[]  
 
                 elif auxColor == self.colores['cVer']:
                     if list(pal.lower()) in self.listaPalabrasAceptadas['ver']:
                         sg.Popup("encontraste la palabra: "+pal)
-                        totalPalabrasEncontradas+=1
+                        verEncontrados+=1
                     else:
                         sg.Popup("la palabra "+pal+" no es un verbo")
-                        listPosiciones=[]
-                        if self.ori == True:
-                            for x in range(len(pal)):
-                                g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color='white') 
-                                auxY-=1
-                        else:
-                            for x in range(len(pal)):
-                                g.DrawRectangle((auxY * BOX_SIZE, auxX * BOX_SIZE), (auxY * BOX_SIZE+BOX_SIZE-2, auxX * BOX_SIZE+BOX_SIZE-2), line_color='white')
-                                auxX-=1
+                        self.borrarPosiciones(listaPosiciones, g, BOX_SIZE, marcada)
+                        listaPosiciones=[]  
                 self.palabraSel=[]            
 
-            if len(totalPalabras) == totalPalabrasEncontradas:
-                sg.Popup('    Ganaste! Felicitaciones          ', title='GANASTE', font=(16))    
+            if len(self.listaPalabrasAceptadas['sus']) == susEncontrados and len(self.listaPalabrasAceptadas['adj']) == adjEncontrados and len(self.listaPalabrasAceptadas['ver']) == verEncontrados and not win:
+                sg.Popup('    Ganaste! Felicitaciones          ', title='GANASTE', font=(20))  
+                win=True
 
     #se guarda la posicion de cada letra seleccionada en la matriz y si la posicion ya estaba devuelve true y no la agrega
-    def posLetraMatriz(self, listPosiciones, x, y): 
+    def posLetraMatrizMarcada(self, marcada, x, y): 
         pos=[]
         pos.append(x)
         pos.append(y)
-        if pos in listPosiciones:
-            listPosiciones.remove(pos)
+        if pos in marcada:
+            marcada.remove(pos)
             return True
         else:
-            listPosiciones.append(pos)
+            marcada.append(pos)
         return False
+
+    # Guarda las posiciones que se marcan en la sopa de letras
+    def guardarPosicion(self, listaPosiciones, x, y):  
+        pos=[]
+        pos.append(x)
+        pos.append(y)
+        listaPosiciones.append(pos)
+
+    # Elimina una posicion de la lista de posiciones
+    def eliminarPos(self, listaPosiciones, x, y):
+        pos=[x,y]
+        listaPosiciones.remove(pos)    
+
+    #Borra todas las posiciones del gráfico cuando se selecciona una palabra y no es correcta
+    def borrarPosiciones(self, listaPosiciones, g, BOX_SIZE, marcada):       
+        for i in range(len(listaPosiciones)):
+            posLetra=self.posLetraMatrizMarcada(marcada, listaPosiciones[i][0], listaPosiciones[i][1])
+            if posLetra == True:
+                try:
+                    self.palabraSel.remove(self.matriz[listaPosiciones[i][1]][listaPosiciones[i][0]])
+                except(ValueError):
+                    self.palabraSel=[]    
+                g.DrawRectangle((listaPosiciones[i][1] * BOX_SIZE, listaPosiciones[i][0] * BOX_SIZE), (listaPosiciones[i][1] * BOX_SIZE+BOX_SIZE-2, listaPosiciones[i][0] * BOX_SIZE+BOX_SIZE-2), line_color='white')  
+
 #------------------------------------------------------------Seccion de Brian Gomez, aqui voy a toquetear tu programa------------------------------------------------------------#     
 
 '''
