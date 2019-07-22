@@ -12,11 +12,12 @@ from pattern.web import Wiktionary
 
 class Digom:
     def __init__(self):
-        _listaPalabras= self.recibirPalabras()
+        _listaPalabras= self.recibirPalabras() # Total palabras ingresadas
         colores= self.recibirColores()
         ori= self.recibirOrientacion()
         n= self.sacarMax()
         matriz= self.crearMatriz()
+        self.colorFondo= 'white' #self.recibirLookAndFeel()
         self.tipografia= 'arial' #tipografia= self.recibirTipografia()
         self.cantPalAgregar= [3,2,1] #cantidadPalabrasAgregar= self.recibirListaCantidad()
         self.listaPalabrasAceptadas= {'sus':[],'adj':[],'ver':[]}
@@ -44,7 +45,10 @@ class Digom:
         
     def recibirListaCantidad(self):
         self.cantPalAgregar= vc.recibirListaCantidad() #lista=[2,3,1] cantidad de palabras a agregar de los sus, adj y ver    
-         '''   
+            
+    def recibirLookAndFeel(self):
+        self.colorFondo= sensor.recibirLookAndFeel()
+        '''
     
     def sacarMax(self):
         max=0
@@ -214,7 +218,7 @@ class Digom:
                 ]
             layout[2].append(sg.Frame('Definicion de palabra al azar', definicionPalabra, font='Any 10', title_color='blue', size=(self.n*2, self.n*10)))
 
-        window = sg.Window('Game', font=(self.tipografia, 10), background_color='White').Layout(layout).Finalize()
+        window = sg.Window('Game', font=(self.tipografia, 10), background_color=self.colorFondo).Layout(layout).Finalize()
         g = window.FindElement('Graph')
 
         # Dibuja la matriz en el gráfico
@@ -284,7 +288,7 @@ class Digom:
                             try:
                                 self.palabraSel.remove(self.matriz[y][x])
                                 self.palabraSel.remove(self.matriz[y][x]) #Para que elimine bien tiene que estar 2 veces
-                                g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color='white')
+                                g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color=self.colorFondo)
                             except(ValueError): #Reiniciar la lista de posiciones guardadas porque no se eligió ninguna letra todavía
                                 self.palabraSel=[] 
                             self.eliminarPos(listaPosiciones, x, y)
@@ -373,7 +377,7 @@ class Digom:
                     self.palabraSel.remove(self.matriz[listaPosiciones[i][1]][listaPosiciones[i][0]])
                 except(ValueError):
                     self.palabraSel=[]    
-                g.DrawRectangle((listaPosiciones[i][1] * BOX_SIZE, listaPosiciones[i][0] * BOX_SIZE), (listaPosiciones[i][1] * BOX_SIZE+BOX_SIZE-2, listaPosiciones[i][0] * BOX_SIZE+BOX_SIZE-2), line_color='white')  
+                g.DrawRectangle((listaPosiciones[i][1] * BOX_SIZE, listaPosiciones[i][0] * BOX_SIZE), (listaPosiciones[i][1] * BOX_SIZE+BOX_SIZE-2, listaPosiciones[i][0] * BOX_SIZE+BOX_SIZE-2), line_color=self.colorFondo)  
 
 #------------------------------------------------------------Seccion de Brian Gomez, aqui voy a toquetear tu programa------------------------------------------------------------#     
 
