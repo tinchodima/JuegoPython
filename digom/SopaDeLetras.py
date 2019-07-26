@@ -5,10 +5,8 @@
 
 import random
 import string
-import sys
 import PySimpleGUI as sg
 import ventanaConfiguracion as vc
-from pattern.web import Wiktionary
 
 class Digom:
     def __init__(self):
@@ -194,7 +192,8 @@ class Digom:
                 break
             else:
                 cont+=1
-       
+
+
     # Método que crea el gráfico
     def graficar(self):
         auxColor='white' #Si no se elije un tipo de palabra no se pinta nada 
@@ -237,7 +236,7 @@ class Digom:
                 if self.ayuda == 3:
                     window.FindElement('ayudaDef').Update(textoDefinicion)
                 elif self.ayuda == 2:
-                    window.FindElement('ayudaPal').Update(totalPalabras)
+                    window.FindElement('ayudaPal').Update(totalPalabrasCopy)
 
             # Si apreta un tipo de palabra y quiere cambiarlo cuando ya eligio alguna palabra
             if event == 'Sustantivo' or event == 'Adjetivo' or event == 'Verbo':
@@ -292,7 +291,7 @@ class Digom:
 
             if event == 'Comprobar Palabra' and len(self.palabraSel)!=0:
                 block=True
-                self.comprobarPalabra(BOX_SIZE,marcada,listaPosiciones,auxColor,g,listaPosicionesNoBorrar)           
+                self.comprobarPalabra(BOX_SIZE,marcada,listaPosiciones,auxColor,g,listaPosicionesNoBorrar)
 
             # El juegador gana cuando encontró el total de palabras a buscar con su tipo
             palabrasEncontradas=set(self.palabrasEncontradas)
