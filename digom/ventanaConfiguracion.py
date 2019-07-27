@@ -47,9 +47,9 @@ def clasificarPalabraPattern(palabra):
     except(AttributeError):
         return 'No se pudo clasificar'
 
-def comprobarWikPattern(palabra,listaPalabras):
+def comprobarWikPattern(palabra,listaPalabras,values):
 	if clasificarPalabraPattern(palabra) == clasificarPalabraWiktionary(palabra) and clasificarPalabraPattern(palabra) != 'No se pudo clasificar':
-		clasificacionWiktionary(palabra,listaPalabras)
+		clasificacionWiktionary(palabra,listaPalabras,values)
 		definiciones[palabra] = obtenerDefinicion(palabra)
 		print('wik1')
 	elif clasificarPalabraWiktionary(palabra) == 'No se pudo clasificar' and clasificarPalabraPattern(palabra) == 'No se pudo clasificar':
@@ -73,33 +73,42 @@ def comprobarWikPattern(palabra,listaPalabras):
 		#pedir que ingrese una definicion
 	elif clasificarPalabraPattern(palabra) != clasificarPalabraWiktionary(palabra) and clasificarPalabraPattern(palabra) != 'No se pudo clasificar':
 		#informar en un reporte que la clasificacion no existe en pattern
-		clasificacionWiktionary(palabra,listaPalabras)
+		clasificacionWiktionary(palabra,listaPalabras,values)
 		definiciones[palabra] = obtenerDefinicion(palabra)
 		msg = 'Clasificacion no encontrada en Pattern'
 		reporteClasificaciones(msg)
 		print('wik2')
 	elif clasificarPalabraPattern(palabra) != clasificarPalabraWiktionary(palabra) and clasificarPalabraPattern(palabra) != 'No se pudo clasificar' and clasificarPalabraWiktionary(palabra) != 'No se pudo clasificar':
 		#informar en un reporte que la clasificacion no existe en pattern
-		clasificacionWiktionary(palabra,listaPalabras)
+		clasificacionWiktionary(palabra,listaPalabras,values)
 		definiciones[palabra] = obtenerDefinicion(palabra)
 		msg = 'Clasificacion no encontrada en Pattern'
 		reporteClasificaciones(msg)
 		print('wik3')
 
-def clasificacionWiktionary(p,listaPalabras):
+def clasificacionWiktionary(p,listaPalabras,values):
     try:
         if comprobarQueLaPalabraNoEsteAgregada(p,listaPalabras) == False:
             sg.Popup('La palabra ya esta agregada en la sopa de letras')
         else:
             if clasificarPalabraWiktionary(p) == 'NN':
-                listaSustantivos.append(p)
-                listaPalabrasAceptadas.append(p)
+                if str(len(listaSustantivos)) < values['cantS']:
+                    listaSustantivos.append(p)
+                    listaPalabrasAceptadas.append(p)
+                else:
+                    sg.Popup('El limite de Sustantivos se alcanzo')
             elif clasificarPalabraWiktionary(p) == 'JJ':
-                listaAdjetivos.append(p)
-                listaPalabrasAceptadas.append(p)
+                if str(len(listaSustantivos)) < values['cantA']:
+                    listaSustantivos.append(p)
+                    listaPalabrasAceptadas.append(p)
+                else:
+                    sg.Popup('El limite de Adjetivos se alcanzo')
             elif clasificarPalabraWiktionary(p) == 'VB':
-                listaVerbos.append(p)
-                listaPalabrasAceptadas.append(p)
+                if str(len(listaSustantivos)) < values['cantV']:
+                    listaSustantivos.append(p)
+                    listaPalabrasAceptadas.append(p)
+                else:
+                    sg.Popup('El limite de Verbos se alcanzo')
             else:
                 print('No se pudo agregar')
             
@@ -194,15 +203,14 @@ def recibirDefiniciones():
 	
 layout = [
 	[sg.Text('DIGOM: SOPA DE LETRAS', size=(32, 1), font=('Time New Roman', 14), background_color='#80cbc4')],
+	[sg.Text('● Configurar cantidad de palabras a ingresar', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4')],
+	[sg.Text('Cantidad de Sustantivos', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantS')),sg.Text('Cantidad de Adjetivos', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantA')),sg.Text('Cantidad de Verbos', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantV'))],
 	[sg.Text('● Ingrese una palabra:', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'), sg.InputText(key='textoIngresado'), sg.Submit('Agregar'), sg.Submit('Quitar')],
 	[sg.Multiline(key='dato', size=(70,1), font='Arial', text_color='blue')],
 	[sg.Text('● Nivel de dificultad:     ', text_color='black', font=('Time New Roman', 11),background_color='#80cbc4'), sg.Radio('Sin ayuda ', "RADIO1", default=True, background_color='#80cbc4', key='sinAyuda'), sg.Radio('Mostrar definiciones', "RADIO1", background_color='#80cbc4', key='mosDef'), sg.Radio('Mostrar palabras a buscar', "RADIO1", background_color='#80cbc4', key='mosPal')],
 	[sg.Text('● Orientación de las palabras:     ', text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'), sg.Radio('Horizontal', "RADIO2", default=True, background_color='#80cbc4', key='horizontal'), sg.Radio('Vertical', "RADIO2", background_color='#80cbc4', key='vertical')],
 	[sg.Text('● Elegir colores',text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'), sg.ColorChooserButton('Sustantivos',button_color=('#FFFFFF','#03A9F4')), sg.ColorChooserButton('Adjetivos',button_color=('#FFFFFF','#03A9F4')), sg.ColorChooserButton('Verbos',button_color=('#FFFFFF','#03A9F4'))],
-	[sg.Submit('Generar sopa de letras'), sg.Cancel('Salir')],
-	[sg.Spin([i for i in range(0,11)], initial_value=0),sg.Text('Cantidad de Sustantivos')],
-	[sg.Spin([i for i in range(0,11)], initial_value=0),sg.Text('Cantidad de Adjetivos')],
-	[sg.Spin([i for i in range(0,11)], initial_value=0),sg.Text('Cantidad de Verbos')]
+	[sg.Submit('Generar sopa de letras'), sg.Cancel('Salir')]
 ]
 window = sg.Window('Seminario de Lenguajes 2019: Python', font=('Arial', 10), background_color='#80cbc4').Layout(layout)
 
@@ -218,7 +226,6 @@ definiciones= {}
 ayuda=1
 while True:
 	button, values = window.Read()
-	print(definiciones)
 	if button == 'Salir':
 		break
 	else:
@@ -233,7 +240,7 @@ while True:
 			ayuda=3
 
 		if button == 'Agregar':
-			comprobarWikPattern(values['textoIngresado'],listaPalabrasAceptadas)
+			comprobarWikPattern(values['textoIngresado'],listaPalabrasAceptadas,values)
 			mostrar = ', '.join(listaPalabrasAceptadas)
 			window.FindElement('dato').Update(mostrar)
 			window.FindElement('textoIngresado').Update('')
