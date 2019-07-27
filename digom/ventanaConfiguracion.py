@@ -240,10 +240,13 @@ while True:
 			ayuda=3
 
 		if button == 'Agregar':
-			comprobarWikPattern(values['textoIngresado'],listaPalabrasAceptadas,values)
-			mostrar = ', '.join(listaPalabrasAceptadas)
-			window.FindElement('dato').Update(mostrar)
-			window.FindElement('textoIngresado').Update('')
+			if len(listaPalabrasAceptadas) == 0:
+				sg.Popup('¡Antes de agregar debe ingresar palabras!')
+			else:
+				comprobarWikPattern(values['textoIngresado'],listaPalabrasAceptadas,values)
+				mostrar = ', '.join(listaPalabrasAceptadas)
+				window.FindElement('dato').Update(mostrar)
+				window.FindElement('textoIngresado').Update('')
 		
 		if button == 'Quitar':
 			listaPalabrasAceptadas.remove(values[0])
