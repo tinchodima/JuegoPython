@@ -18,7 +18,7 @@ def clasificarPalabraWiktionary(palabra):
 
         if clasificacion.lower() == "sustantivo":
             return 'NN'
-        elif clasificacion.lower() == "adjetivo":
+        elif clasificacion.lower() == "adjetivo" or "forma adjetiva":
             return 'JJ'
         elif clasificacion.lower() == "verbo":
             return 'VB'
@@ -139,9 +139,26 @@ def reporteClasificaciones(error):
 	f.close
 
 def obtenerDefinicion(palabra):
+	# ~ w = Wiktionary(language="es")
+	# ~ a = w.search(palabra)
+	# ~ definicion = a.sections[3].content.split('1')[1].split('.2')[0].split('*')[0]
+	# ~ return definicion
 	w = Wiktionary(language="es")
 	a = w.search(palabra)
-	definicion = a.sections[3].content.split('1')[1].split('.2')[0].split('*')[0]
+	#definicion = a.sections[3].content.split('1')[1].split('.2')[0].split('*')[0]
+	try:
+		definicion = a.sections[3].content.split('1')[1].split('.2')[0].split('*')[0]
+	except(IndexError):
+		# ~ a.sections[3].content.split('1')[0].split('\n')[2] == ' ' or
+		try:
+			definicion = a.sections[3].content.split('1')[0].split('*')[1]
+			if ' ' in definicion[1]:
+				try:
+					definicion = a.sections[3].content.split('1')[0].split('*')[2]
+				except(IndexError):
+					definicion = a.sections[3].content.split('1')[0].split('*')[3]
+		except(IndexError):
+				definicion = a.sections[3].content.split('1')[0].split('*')[2]
 	return definicion
 
 def recibirDatos():
@@ -198,7 +215,7 @@ definiciones= {}
 ayuda=1
 while True:
 	button, values = window.Read()
-
+	print(definiciones)
 	if button == 'Salir':
 		break
 	else:
