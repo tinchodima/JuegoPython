@@ -199,7 +199,10 @@ layout = [
 	[sg.Text('● Nivel de dificultad:     ', text_color='black', font=('Time New Roman', 11),background_color='#80cbc4'), sg.Radio('Sin ayuda ', "RADIO1", default=True, background_color='#80cbc4', key='sinAyuda'), sg.Radio('Mostrar definiciones', "RADIO1", background_color='#80cbc4', key='mosDef'), sg.Radio('Mostrar palabras a buscar', "RADIO1", background_color='#80cbc4', key='mosPal')],
 	[sg.Text('● Orientación de las palabras:     ', text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'), sg.Radio('Horizontal', "RADIO2", default=True, background_color='#80cbc4', key='horizontal'), sg.Radio('Vertical', "RADIO2", background_color='#80cbc4', key='vertical')],
 	[sg.Text('● Elegir colores',text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'), sg.ColorChooserButton('Sustantivos',button_color=('#FFFFFF','#03A9F4')), sg.ColorChooserButton('Adjetivos',button_color=('#FFFFFF','#03A9F4')), sg.ColorChooserButton('Verbos',button_color=('#FFFFFF','#03A9F4'))],
-	[sg.Submit('Generar sopa de letras'), sg.Cancel('Salir')]
+	[sg.Submit('Generar sopa de letras'), sg.Cancel('Salir')],
+	[sg.Spin([i for i in range(0,11)], initial_value=0),sg.Text('Cantidad de Sustantivos')],
+	[sg.Spin([i for i in range(0,11)], initial_value=0),sg.Text('Cantidad de Adjetivos')],
+	[sg.Spin([i for i in range(0,11)], initial_value=0),sg.Text('Cantidad de Verbos')]
 ]
 window = sg.Window('Seminario de Lenguajes 2019: Python', font=('Arial', 10), background_color='#80cbc4').Layout(layout)
 
