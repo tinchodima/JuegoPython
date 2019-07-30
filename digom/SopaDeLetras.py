@@ -6,23 +6,25 @@
 import random
 import string
 import PySimpleGUI as sg
-import ventanaConfiguracion as vc
+from Configuracion import Configuracion
 
-class Digom:
+class Digom(Configuracion):
     def __init__(self):
-        _listaPalabras= self.recibirPalabras() # Total palabras ingresadas
-        colores= self.recibirColores()
-        ori= self.recibirOrientacion()
-        n= self.sacarMax()
-        matriz= self.crearMatriz()
-        self.colorFondo= 'grey' # self.recibirLookAndFeel() LOOK AND FEEL
-        self.tipografia= 'arial' # tipografia= self.recibirTipografia()
-        self.cantPalAgregar= [3,2,1] # cantidadPalabrasAgregar= self.recibirListaCantidad()
-        self.listaPalabrasAceptadas= {'sus':[],'adj':[],'ver':[]}
-        self.mayOmin=True # mayOmin en true es mayuscula y false en minuscula
-        self.ayuda= self._listaPalabras[2]
-        self.palabrasEncontradas= [] # Lista de las palabras encontradas
-        self.palabraSel= [] # Lista con la palabra seleccionada
+        Configuracion.__init__(self)
+        _listaPalabras = self.recibirDatos() # Total palabras ingresadas
+        colores = self.recibirColores()
+        definiciones = self.recibirDefiniciones()
+        ori = self.recibirOri()
+        ayuda = self.recibirAyuda()
+        n = self.sacarMax()
+        matriz = self.crearMatriz()       
+        self.colorFondo = 'grey' # self.recibirLookAndFeel() LOOK AND FEEL
+        self.tipografia = 'arial' # tipografia= self.recibirTipografia()
+        self.cantPalAgregar = [3,2,1] # cantidadPalabrasAgregar= self.recibirListaCantidad()
+        self.listaPalabrasAceptadas = {'sus':[],'adj':[],'ver':[]}
+        self.mayOmin = True # mayOmin en true es mayuscula y false en minuscula
+        self.palabrasEncontradas = [] # Lista de las palabras encontradas
+        self.palabraSel = [] # Lista con la palabra seleccionada
 
     #listaPalabras= [ [listaSustantivos[], listaAdjetivos[], listaVerbos[]], True(ori), True(ayuda) ]
     #listaPalabras[0]= [listaSustantivos, listaAdjetivos, listaVerbos]
@@ -30,14 +32,20 @@ class Digom:
     #listaPalabras[0][1][0]= "casa"
 
     # Métodos que traen la información desde la ventana de configuración
-    def recibirPalabras(self):  
-        self._listaPalabras = vc.recibirDatos() #recibe una lista de listas desde la ventana configuracion
+    def recibirDatos(self):  
+        self._listaPalabras = self.getDatos() #recibe una lista de listas desde la ventana configuracion
 
     def recibirColores(self):
-        self.colores = vc.recibirColores() #diccionario con colores de los tipos de letra   
+        self.colores = self.getColores() #diccionario con colores de los tipos de letra   
 
-    def recibirOrientacion(self):
-        self.ori = self._listaPalabras[1]
+    def recibirDefiniciones(self):
+        self.definiciones = self.getDefiniciones()
+
+    def recibirOri(self):
+        self.ori = self.getOri()  
+
+    def recibirAyuda(self):
+        self.ayuda = self.getAyuda()       
 
     '''def recibirTipografia(self):
         self.tipografia = vc.recibirTipografia()
@@ -54,8 +62,8 @@ class Digom:
         max=0
         if len(self._listaPalabras) != 0:
             for j in range(3):
-                for i in range(len(self._listaPalabras[0][j])):
-                    palabra=list(self._listaPalabras[0][j][i])
+                for i in range(len(self._listaPalabras[j])):
+                    palabra=list(self._listaPalabras[j][i])
                     num=len(palabra)
                     if num >= max:
                         max=num
@@ -83,7 +91,7 @@ class Digom:
 
     # Agrega de las palabras ingresadas, la cantidad indicada, eligiendo al azar entre ellas
     def meterPalabrasEnMatriz(self):
-        listaPalCopia=self._listaPalabras[0].copy()
+        listaPalCopia=self._listaPalabras.copy()
         for i in range(3):
             while self.cantPalAgregar[i] > 0 and len(listaPalCopia[i]) != 0:
                 numRandom = random.randrange(len(listaPalCopia[i]))
@@ -92,10 +100,10 @@ class Digom:
                 self.aceptarPalabra(i,palabra)
                 # Si ori es true la palabra se mete horizontal
                 if self.ori:
-                    self.meterPalabraHorizontalmente(listaPalabra, self._listaPalabras[0][i]) 
+                    self.meterPalabraHorizontalmente(listaPalabra, self._listaPalabras[i]) 
                 # Si ori es false la palabra se mete vertical    
                 else:
-                    self.meterPalabraVerticalmente(listaPalabra, self._listaPalabras[0][i])
+                    self.meterPalabraVerticalmente(listaPalabra, self._listaPalabras[i])
             
                 self.cantPalAgregar[i] = self.cantPalAgregar[i] -1
                 listaPalCopia[i].pop(numRandom)
