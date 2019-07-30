@@ -15,11 +15,19 @@ class Configuracion:
         self.__listaAdjetivos = []
         self.__listaVerbos = []
         self.__listaPalabrasAceptadas = []
-        self.__listaPalabras = ()
+        self.__listaPalabras = [self.__listaSustantivos, self.__listaAdjetivos, self.__listaVerbos]
+        self.__orientacion = True
+        self.__ayuda = 1
         self.__listaAyuda = ()
-        self.__colores = ()
+        self.__colores = {'cSus':'','cAdj':'','cVer':''}
         self.__definiciones = {}
         #self.__palabra = values['textoIngresado']
+
+    def getOri(self):
+        return self.__orientacion
+
+    def getAyuda(self):
+        return self.__ayuda    
 
     def clasificarPalabraWiktionary(self,palabra):
         w = Wiktionary(language="es")
@@ -180,29 +188,19 @@ class Configuracion:
                     definicion = a.sections[3].content.split('1')[0].split('*')[2]
         return definicion
 
-    def recibirDatos(self):
+    def getDatos(self):
         '''
             Retorna los datos y la configuracion para usar en la sopa de letras
         '''
         return self.__listaPalabras
 
-    def recibirColores(self):
+    def getColores(self):
         '''
             Retorna los colores de los tipos de palabras
         '''	
         return self.__colores
 
-    def recibirTipoDeAyuda(self):
-        '''
-            1: Sin ayuda
-            2: Mostrar definiciones
-            3: Mostrar palabras a buscar
-            Devuelve en una tupla el tipo de ayuda seleccionado
-        '''
-        
-        return False
-
-    def recibirDefiniciones(self):
+    def getDefiniciones(self):
         '''
             Devuelve un diccionario con la palabra como clave y la definicion como valor
         '''
@@ -212,7 +210,7 @@ class Configuracion:
         layout = [
             [sg.Text('DIGOM: SOPA DE LETRAS', size=(32, 1), font=('Time New Roman', 14), background_color='#80cbc4')],
             [sg.Text('● Configurar cantidad de palabras a ingresar', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4')],
-            [sg.Text('Cantidad de Sustantivos', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantS')),sg.Text('Cantidad de Adjetivos', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantA')),sg.Text('Cantidad de Verbos', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantV'))],
+            [sg.Text('Sustantivos', text_color='black',font=('Time New Roman', 11), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantS')),sg.Text('Adjetivos', text_color='black',font=('Time New Roman', 11), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantA')),sg.Text('Verbos', text_color='black',font=('Time New Roman', 11), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantV'))],
             [sg.Text('● Ingrese una palabra:', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'), sg.InputText(key='textoIngresado'), sg.Submit('Agregar'), sg.Submit('Quitar')],
             [sg.Multiline(key='dato', size=(70,1), font='Arial', text_color='blue')],
             [sg.Text('● Nivel de dificultad:     ', text_color='black', font=('Time New Roman', 11),background_color='#80cbc4'), sg.Radio('Sin ayuda ', "RADIO1", default=True, background_color='#80cbc4', key='sinAyuda'), sg.Radio('Mostrar definiciones', "RADIO1", background_color='#80cbc4', key='mosDef'), sg.Radio('Mostrar palabras a buscar', "RADIO1", background_color='#80cbc4', key='mosPal')],
@@ -228,14 +226,14 @@ class Configuracion:
                 break
             else:
                 if values['horizontal']:
-                    orientacion=True
+                    self.orientacion=True
                 else:
-                    orientacion=False
+                    self.orientacion=False
                     
                 if values['mosPal']:
-                    ayuda=2
+                    self.ayuda=2
                 elif values['mosDef']:
-                    ayuda=3
+                    self.ayuda=3
 
                 if button == 'Agregar':
                     
@@ -258,7 +256,6 @@ class Configuracion:
                 print('Verbos: ', self.__listaVerbos)
 
             if button != 'Salir':
-                self.__listaPalabras = ([self.__listaSustantivos, self.__listaAdjetivos, self.__listaVerbos], orientacion, ayuda)
                 #   Elección de colores, si no se elije alguno se aplica el color por defecto
                 if (values['Sustantivos']==''):
                     colorS='yellow'
