@@ -6,16 +6,15 @@
 import random
 import string
 import PySimpleGUI as sg
-from Configuracion import Configuracion
+import ventanaConfiguracion as vc
 
-class Digom(Configuracion):
+class Digom():
     def __init__(self):
-        Configuracion.__init__(self)
-        _listaPalabras = self.recibirDatos() # Total palabras ingresadas
-        colores = self.recibirColores()
-        definiciones = self.recibirDefiniciones()
-        ori = self.recibirOri()
-        ayuda = self.recibirAyuda()
+        self._listaPalabras = vc.getDatos()
+        self.colores = vc.getColores()
+        self.definiciones = vc.getDefiniciones()
+        self.ori = vc.getOri()  
+        self.ayuda = vc.getAyuda()  
         n = self.sacarMax()
         matriz = self.crearMatriz()       
         self.colorFondo = 'grey' # self.recibirLookAndFeel() LOOK AND FEEL
@@ -29,23 +28,7 @@ class Digom(Configuracion):
     #listaPalabras= [ [listaSustantivos[], listaAdjetivos[], listaVerbos[]], True(ori), True(ayuda) ]
     #listaPalabras[0]= [listaSustantivos, listaAdjetivos, listaVerbos]
     #listaPalabras[0][1]= ["casa", "auto"]
-    #listaPalabras[0][1][0]= "casa"
-
-    # Métodos que traen la información desde la ventana de configuración
-    def recibirDatos(self):  
-        self._listaPalabras = self.getDatos() #recibe una lista de listas desde la ventana configuracion
-
-    def recibirColores(self):
-        self.colores = self.getColores() #diccionario con colores de los tipos de letra   
-
-    def recibirDefiniciones(self):
-        self.definiciones = self.getDefiniciones()
-
-    def recibirOri(self):
-        self.ori = self.getOri()  
-
-    def recibirAyuda(self):
-        self.ayuda = self.getAyuda()       
+    #listaPalabras[0][1][0]= "casa"     
 
     '''def recibirTipografia(self):
         self.tipografia = vc.recibirTipografia()
@@ -203,7 +186,7 @@ class Digom(Configuracion):
 
 
     # Método que crea el gráfico
-    def graficar(self):
+    def graficarSopaDeLetras(self):
         auxColor='white' #Si no se elije un tipo de palabra no se pinta nada 
         marcada=[] # Posicion de la letra seleccionada de la matriz (lista que se usa para deseleccionar cuando se vuelve a clickear)
         block=True # Si se elige un tipo de palabra ya no se podra elegir otro hasta que confirme palabra
@@ -244,7 +227,7 @@ class Digom(Configuracion):
                 if self.ayuda == 3:
                     window.FindElement('ayudaDef').Update(textoDefinicion)
                 elif self.ayuda == 2:
-                    window.FindElement('ayudaPal').Update(totalPalabrasCopy)
+                    window.FindElement('ayudaPal').Update(totalPalabras)
 
             # Si apreta un tipo de palabra y quiere cambiarlo cuando ya eligio alguna palabra
             if event == 'Sustantivo' or event == 'Adjetivo' or event == 'Verbo':

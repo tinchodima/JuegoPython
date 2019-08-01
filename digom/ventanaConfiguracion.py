@@ -170,30 +170,32 @@ def obtenerDefinicion(palabra):
 				definicion = a.sections[3].content.split('1')[0].split('*')[2]
 	return definicion
 
-def recibirDatos():
+def getDatos():
 	'''
 		Retorna los datos y la configuracion para usar en la sopa de letras
 	'''
 	return listaPalabras
 
-def recibirColores():
+def getColores():
 	'''
 		Retorna los colores de los tipos de palabras
 	'''	
 	return colores
 
-def recibirTipoDeAyuda():
+def getAyuda():
 	'''
 		1: Sin ayuda
 		2: Mostrar definiciones
 		3: Mostrar palabras a buscar
 		Devuelve en una tupla el tipo de ayuda seleccionado
-	'''
-	
-	return False
+	'''	
+	return ayuda
+
+def getOri():
+	return orientacion
 	
 
-def recibirDefiniciones():
+def getDefiniciones():
 	'''
 		Devuelve un diccionario con la palabra como clave y la definicion como valor
 	'''
@@ -204,7 +206,7 @@ def recibirDefiniciones():
 layout = [
 	[sg.Text('DIGOM: SOPA DE LETRAS', size=(32, 1), font=('Time New Roman', 14), background_color='#80cbc4')],
 	[sg.Text('● Configurar cantidad de palabras a ingresar', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4')],
-	[sg.Text('Cantidad de Sustantivos', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantS')),sg.Text('Cantidad de Adjetivos', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantA')),sg.Text('Cantidad de Verbos', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantV'))],
+	[sg.Text('Sustantivos', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantS')),sg.Text('Cantidad de Adjetivos', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantA')),sg.Text('Cantidad de Verbos', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantV'))],
 	[sg.Text('● Ingrese una palabra:', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'), sg.InputText(key='textoIngresado'), sg.Submit('Agregar'), sg.Submit('Quitar')],
 	[sg.Multiline(key='dato', size=(70,1), font='Arial', text_color='blue')],
 	[sg.Text('● Nivel de dificultad:     ', text_color='black', font=('Time New Roman', 11),background_color='#80cbc4'), sg.Radio('Sin ayuda ', "RADIO1", default=True, background_color='#80cbc4', key='sinAyuda'), sg.Radio('Mostrar definiciones', "RADIO1", background_color='#80cbc4', key='mosDef'), sg.Radio('Mostrar palabras a buscar', "RADIO1", background_color='#80cbc4', key='mosPal')],
@@ -239,8 +241,7 @@ while True:
 		elif values['mosDef']:
 			ayuda=3
 
-		if button == 'Agregar':
-			
+		if button == 'Agregar':			
 			comprobarWikPattern(values['textoIngresado'],listaPalabrasAceptadas,values)
 			mostrar = ', '.join(listaPalabrasAceptadas)
 			window.FindElement('dato').Update(mostrar)
@@ -260,7 +261,7 @@ while True:
 		print('Verbos: ', listaVerbos)
 
 if button != 'Salir':
-	listaPalabras = ([listaSustantivos, listaAdjetivos, listaVerbos], orientacion, ayuda)
+	listaPalabras = [listaSustantivos, listaAdjetivos, listaVerbos]
 
 	#   Elección de colores, si no se elije alguno se aplica el color por defecto
 	if (values['Sustantivos']==''):

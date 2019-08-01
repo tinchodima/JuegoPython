@@ -3,13 +3,11 @@
 # !/usr/bin/python3
 #  -*- coding: utf-8 -*-
 
-import sys
 import PySimpleGUI as sg
 from pattern.web import Wiktionary
 from pattern.es import parse,split
-import SopaDeLetras as sdl
 
-class Configuracion:
+class Conf:
     def __init__(self):
         self.__listaSustantivos = []
         self.__listaAdjetivos = []
@@ -21,6 +19,7 @@ class Configuracion:
         self.__listaAyuda = ()
         self.__colores = {'cSus':'','cAdj':'','cVer':''}
         self.__definiciones = {}
+        self.ok= False
         #self.__palabra = values['textoIngresado']
 
     def getOri(self):
@@ -206,6 +205,12 @@ class Configuracion:
         '''
         return self.__definiciones
 
+    def empezar(self):
+        if self.ok:
+            return True
+        else:
+            return False    
+
     def graficarConfiguracion(self):
         layout = [
             [sg.Text('DIGOM: SOPA DE LETRAS', size=(32, 1), font=('Time New Roman', 14), background_color='#80cbc4')],
@@ -249,6 +254,7 @@ class Configuracion:
                 if button == 'Generar sopa de letras':
                     if len(self.__listaPalabrasAceptadas) == 0:
                         sg.Popup('¡Antes de agregar debe ingresar palabras!')
+                    self.ok=True    
                     break
                 
                 print('Adjetivos: ', self.__listaAdjetivos)
@@ -280,3 +286,10 @@ class Configuracion:
             else:
                 self.__listaPalabras=()
                 self.__colores={}
+        self.empezar() 
+
+if __name__ == "__main__":
+    c = Configuracion()
+    c.graficarConfiguracion()
+
+
