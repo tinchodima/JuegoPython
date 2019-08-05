@@ -202,16 +202,16 @@ def getCantPal():
 
 	
 layout = [
-	[sg.T('DIGOM: SOPA DE LETRAS', size=(32, 1), font=('Time New Roman', 14), background_color='#80cbc4')],
-	[sg.T('● Cantidad de palabras a ingresar', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4')],
-	[sg.T('Sustantivos', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantS')),sg.Text('Cantidad de Adjetivos', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantA')),sg.Text('Cantidad de Verbos', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantV'))],
+	[sg.T('DIGOM: SOPA DE LETRAS', size=(32, 1), font=('Time New Roman', 20), background_color='#80cbc4')],
+	[sg.T('● Cantidad de palabras que se van a ingresar a la sopa de letras', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4')],
+	[sg.T('Sustantivos', text_color='black',font=('Time New Roman', 10), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantS')),sg.Text('Adjetivos', text_color='black',font=('Time New Roman', 10), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantA')),sg.Text('Verbos', text_color='black',font=('Time New Roman', 10), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantV'))],
 	[sg.T('● Ingrese una palabra:', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'), sg.InputText(key='textoIngresado'), sg.Submit('Agregar'), sg.Submit('Quitar')],
 	[sg.Multiline(key='dato', size=(70,1), font='Arial', text_color='blue')],
-	[sg.T('● Nivel de dificultad:   ', text_color='black', font=('Time New Roman', 11),background_color='#80cbc4'), sg.Radio('Sin ayuda ', "RADIO1", default=True, background_color='#80cbc4', key='sinAyuda'), sg.Radio('Con definiciones', "RADIO1", background_color='#80cbc4', key='mosDef'), sg.Radio('Mostrando las palabras a buscar', "RADIO1", background_color='#80cbc4', key='mosPal')],
-	[sg.T('● Orientación de las palabras:   ', text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'), sg.Radio('Horizontal', "RADIO2", default=True, background_color='#80cbc4', key='horizontal'), sg.Radio('Vertical', "RADIO2", background_color='#80cbc4', key='vertical')],
-	[sg.T('● Fuente: ', text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'), sg.InputCombo(['Arial', 'Helvetica', 'Calibri', 'Consolas', 'Tahoma', 'Courier', 'Verdana', 'Times', 'Fixedsys', 'Comic,'], size=(20, 20), key='font', readonly=True)],
-	[sg.T('● Tipo: ', text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'),sg.InputCombo(['Mayúscula', 'Minúscula'], size=(20, 20), key='mayOmin', readonly=True)],
-	[sg.T('● Elegir colores',text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'), sg.ColorChooserButton('Sustantivos',button_color=('#FFFFFF','#03A9F4')), sg.ColorChooserButton('Adjetivos',button_color=('#FFFFFF','#03A9F4')), sg.ColorChooserButton('Verbos',button_color=('#FFFFFF','#03A9F4'))],
+	[sg.T('● Nivel de dificultad:   ', text_color='black', font=('Time New Roman', 12),background_color='#80cbc4'), sg.Radio('Sin ayuda ', "RADIO1", default=True, background_color='#80cbc4', key='sinAyuda'), sg.Radio('Con definiciones', "RADIO1", background_color='#80cbc4', key='mosDef'), sg.Radio('Mostrando las palabras a buscar', "RADIO1", background_color='#80cbc4', key='mosPal')],
+	[sg.T('● Orientación de las palabras:   ', text_color='black', font=('Time New Roman', 12), background_color='#80cbc4'), sg.Radio('Horizontal', "RADIO2", default=True, background_color='#80cbc4', key='horizontal'), sg.Radio('Vertical', "RADIO2", background_color='#80cbc4', key='vertical')],
+	[sg.T('● Fuente: ', text_color='black', font=('Time New Roman', 12), background_color='#80cbc4'), sg.InputCombo(['Arial', 'Helvetica', 'Calibri', 'Consolas', 'Tahoma', 'Courier', 'Verdana', 'Times', 'Fixedsys'], size=(12, 20), key='font', readonly=True)],
+	[sg.T('● Tipo: ', text_color='black', font=('Time New Roman', 12), background_color='#80cbc4'),sg.InputCombo(['Mayúscula', 'Minúscula'], size=(12, 20), key='mayOmin', readonly=True)],
+	[sg.T('● Elegir colores: ',text_color='black', font=('Time New Roman', 12), background_color='#80cbc4'), sg.ColorChooserButton('Sustantivos',button_color=('#000000','#03A9F4')), sg.ColorChooserButton('Adjetivos',button_color=('#000000','#03A9F4')), sg.ColorChooserButton('Verbos',button_color=('#000000','#03A9F4'))],
 	[sg.Submit('Generar sopa de letras'), sg.Cancel('Salir')]
 ]
 window = sg.Window('Seminario de Lenguajes 2019: Python', font=('Arial', 10), background_color='#80cbc4').Layout(layout)
