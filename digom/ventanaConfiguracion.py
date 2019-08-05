@@ -235,21 +235,27 @@ while True:
 		window.FindElement('textoIngresado').Update('')
 		
 	if button == 'Quitar':
+<<<<<<< HEAD
 		listaPalabras.remove(values['textoIngresado'])
 		mostrar = ', '.join(listaPalabras)
 		window.FindElement('dato').Update(mostrar)
 		window.FindElement('textoIngresado').Update('')
 		#listaSustantivos.remove(values[0])
+=======
+		listaPalabras.remove(values[0])
+>>>>>>> c09dff657928d037b86248907d02adb8696b0178
 			
 	if button == 'Generar sopa de letras':
 		if len(listaPalabras) == 0:
 			sg.Popup('¡Antes de generar la sopa de letras debe ingresar palabras!')
+		elif int(values['cantS']) + int(values['cantA']) + int(values['cantV']) == 0:
+			sg.Popup('¡Debes darle un valor a la cantidad de palabras que vas a elegir, sino la sopa de letras va a salir vacia!')	
 		else:
 			break	
     
 if button == 'Salir':
 	sys.exit()
-else:
+else:	
 	listaPalabras = [listaSustantivos, listaAdjetivos, listaVerbos]
 
 	if values['horizontal']:
@@ -292,4 +298,5 @@ else:
 
 	colores = dict(cSus=colorS, cAdj=colorA, cVer=colorV)
 	cantPal = [int(values['cantS']), int(values['cantA']), int(values['cantV'])]
+
 	window.Close()
