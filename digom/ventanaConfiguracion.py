@@ -235,7 +235,10 @@ while True:
 		window.FindElement('textoIngresado').Update('')
 		
 	if button == 'Quitar':
-		listaPalabras.remove(values[0])
+		listaPalabras.remove(values['textoIngresado'])
+		mostrar = ', '.join(listaPalabras)
+		window.FindElement('dato').Update(mostrar)
+		window.FindElement('textoIngresado').Update('')
 		#listaSustantivos.remove(values[0])
 			
 	if button == 'Generar sopa de letras':
