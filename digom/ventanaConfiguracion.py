@@ -95,10 +95,10 @@ def clasificacionWiktionary(p,listaPalabras,values):
                 listaSustantivos.append(p)
                 listaPalabras.append(p)
             elif clasificarPalabraWiktionary(p) == 'JJ':
-                listaSustantivos.append(p)
+                listaAdjetivos.append(p)
                 listaPalabras.append(p)
             elif clasificarPalabraWiktionary(p) == 'VB':
-                listaSustantivos.append(p)
+                listaVerbos.append(p)
                 listaPalabras.append(p)
             else:
                 print('No se pudo agregar')
