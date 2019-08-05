@@ -13,8 +13,9 @@ class Digom():
     def __init__(self):
         self._listaPalabras = vc.getDatos()
         self.colores = vc.getColores()
-        self.definiciones = vc.getDefiniciones()
-        self.ori = vc.getOri()  
+        #self.definiciones = vc.getDefiniciones()
+        self.definiciones = [['def 1 sus','def 2 sus', 'def 3 sus'],['def 1 adj','def 2 adj', 'def 3 adj', 'def 4 adj'],['def 1 ver','def 2 ver']]
+        self.ori = vc.getOri()
         self.ayuda = vc.getAyuda() 
         self.tipografia = vc.getFuente() 
         self.mayOmin = vc.getTipo()
@@ -67,7 +68,6 @@ class Digom():
     def meterPalabrasEnMatriz(self):
         listaPalCopia=self._listaPalabras.copy()
         for i in range(3):
-            print(self.cantPalAgregar[i])
             while self.cantPalAgregar[i] != 0 and len(listaPalCopia[i]) != 0:
                 numRandom = random.randrange(len(listaPalCopia[i]))
                 palabra = listaPalCopia[i][numRandom]
@@ -196,7 +196,7 @@ class Digom():
         [sg.T('Elegir un tipo de letra', text_color='blue', background_color=self.colorFondo, font=(self.tipografia,10)), sg.Button('Sustantivo', button_color=('black', self.colores['cSus'])), sg.Button('Adjetivo', button_color=('black', self.colores['cAdj'])), sg.Button('Verbo', button_color=('black', self.colores['cVer']))],
         [sg.Button('Comprobar Palabra'), sg.Button('Salir')]
         ]
-
+        
         self.comprobarAyuda(layout)
         window = sg.Window('Game', font=(self.tipografia, 10), background_color=self.colorFondo).Layout(layout).Finalize()
         g = window.FindElement('Graph')
@@ -345,7 +345,7 @@ class Digom():
                 ]
             layout[2].append(sg.Frame('Definicion de palabra al azar', definicionPalabra, font='Any 10', title_color='blue', size=(self.n*2, self.n*10), background_color=self.colorFondo))
 
-    #se guarda la posicion de cada letra seleccionada en la matriz y si la posicion ya estaba devuelve true y no la agrega
+    # Se guarda la posicion de cada letra seleccionada en la matriz y si la posicion ya estaba devuelve true y no la agrega
     def posLetraMatrizMarcada(self, marcada, x, y): 
         pos=[]
         pos.append(x)
@@ -369,7 +369,7 @@ class Digom():
         pos=[x,y]
         listaPosiciones.remove(pos)    
 
-    #Borra todas las posiciones del gráfico cuando se selecciona una palabra y no es correcta
+    # Borra todas las posiciones del gráfico cuando se selecciona una palabra y no es correcta
     def borrarPosiciones(self, listaPosiciones, g, BOX_SIZE, marcada, listaPosicionesNoBorrar):
         for i in range(len(listaPosicionesNoBorrar)):
             if listaPosicionesNoBorrar[i] in listaPosiciones:
@@ -383,12 +383,10 @@ class Digom():
                 except(ValueError):
                     self.palabraSel=[]    
                 g.DrawRectangle((listaPosiciones[i][1] * BOX_SIZE, listaPosiciones[i][0] * BOX_SIZE), (listaPosiciones[i][1] * BOX_SIZE+BOX_SIZE-2, listaPosiciones[i][0] * BOX_SIZE+BOX_SIZE-2), line_color=self.colorFondo)
-    
+
+    # Devuelve una definicion al azar de las palabras ingresadas
     def mostrarDefinicionAlAzar(self):
-
-        '''Devuelve una definicion al azar en base a las palabras agregadas'''
-
-        posL=random.randrage(3)
-        posP=random.randrage(len(listaPalabras[posL]))
-        definicion = self._listaPalabras[posL][posP]
+        pos1=random.randrange(3)
+        pos2=random.randrange(len(self.definiciones[pos1]))
+        definicion = self.definiciones[pos1][pos2]
         return definicion
