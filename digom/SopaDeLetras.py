@@ -32,7 +32,7 @@ class Digom():
     #listaPalabras[0][1]= ["casa", "auto"]
     #listaPalabras[0][1][0]= "casa"     
     
-    # Saca el número maximo dependiendo de la palabra mas grande
+    # Saca el número maximo dependiendo de la palabra mas grande ingresada
     def sacarMax(self):
         max=0
         if len(self._listaPalabras) != 0:
@@ -42,9 +42,9 @@ class Digom():
                     num=len(palabra)
                     if num >= max:
                         max=num
-            self.n=max+2
+            self.n=max+1
         else:
-            self.n=0     
+            self.n=0
 
     # Creo una matriz de n * n con todos sus elementos siendo "*"
     def crearMatriz(self):
