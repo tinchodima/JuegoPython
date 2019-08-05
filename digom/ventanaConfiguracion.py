@@ -236,17 +236,18 @@ while True:
 		
 	if button == 'Quitar':
 		listaPalabras.remove(values[0])
-		#listaSustantivos.remove(values[0])
 			
 	if button == 'Generar sopa de letras':
 		if len(listaPalabras) == 0:
 			sg.Popup('¡Antes de generar la sopa de letras debe ingresar palabras!')
+		elif int(values['cantS']) + int(values['cantA']) + int(values['cantV']) == 0:
+			sg.Popup('¡Debes darle un valor a la cantidad de palabras que vas a elegir, sino la sopa de letras va a salir vacia!')	
 		else:
 			break	
     
 if button == 'Salir':
 	sys.exit()
-else:
+else:	
 	listaPalabras = [listaSustantivos, listaAdjetivos, listaVerbos]
 
 	if values['horizontal']:
@@ -289,4 +290,5 @@ else:
 
 	colores = dict(cSus=colorS, cAdj=colorA, cVer=colorV)
 	cantPal = [int(values['cantS']), int(values['cantA']), int(values['cantV'])]
+
 	window.Close()
