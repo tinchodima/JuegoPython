@@ -92,23 +92,14 @@ def clasificacionWiktionary(p,listaPalabras,values):
             sg.Popup('La palabra ya esta agregada en la sopa de letras')
         else:
             if clasificarPalabraWiktionary(p) == 'NN':
-                if str(len(listaSustantivos)) < values['cantS']:
-                    listaSustantivos.append(p)
-                    listaPalabrasAceptadas.append(p)
-                else:
-                    sg.Popup('El limite de Sustantivos se alcanzo')
+                listaSustantivos.append(p)
+                listaPalabrasAceptadas.append(p)
             elif clasificarPalabraWiktionary(p) == 'JJ':
-                if str(len(listaSustantivos)) < values['cantA']:
-                    listaSustantivos.append(p)
-                    listaPalabrasAceptadas.append(p)
-                else:
-                    sg.Popup('El limite de Adjetivos se alcanzo')
+                listaSustantivos.append(p)
+                listaPalabrasAceptadas.append(p)
             elif clasificarPalabraWiktionary(p) == 'VB':
-                if str(len(listaSustantivos)) < values['cantV']:
-                    listaSustantivos.append(p)
-                    listaPalabrasAceptadas.append(p)
-                else:
-                    sg.Popup('El limite de Verbos se alcanzo')
+                listaSustantivos.append(p)
+                listaPalabrasAceptadas.append(p)
             else:
                 print('No se pudo agregar')
             
@@ -192,8 +183,7 @@ def getAyuda():
 	return ayuda
 
 def getOri():
-	return orientacion
-	
+	return orientacion	
 
 def getDefiniciones():
 	'''
@@ -201,17 +191,27 @@ def getDefiniciones():
 	'''
 	return definiciones
 
+def getFuente():
+	return fuente
+
+def getTipo():
+	return mayOmin
+
+def getCantPal():
+	return cantPal	
 
 	
 layout = [
-	[sg.Text('DIGOM: SOPA DE LETRAS', size=(32, 1), font=('Time New Roman', 14), background_color='#80cbc4')],
-	[sg.Text('● Configurar cantidad de palabras a ingresar', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4')],
-	[sg.Text('Sustantivos', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantS')),sg.Text('Cantidad de Adjetivos', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantA')),sg.Text('Cantidad de Verbos', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantV'))],
-	[sg.Text('● Ingrese una palabra:', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'), sg.InputText(key='textoIngresado'), sg.Submit('Agregar'), sg.Submit('Quitar')],
+	[sg.T('DIGOM: SOPA DE LETRAS', size=(32, 1), font=('Time New Roman', 14), background_color='#80cbc4')],
+	[sg.T('● Cantidad de palabras a ingresar', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4')],
+	[sg.T('Sustantivos', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantS')),sg.Text('Cantidad de Adjetivos', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantA')),sg.Text('Cantidad de Verbos', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'),sg.Spin([i for i in range(0,11)], initial_value=0, size=(2,2), key=('cantV'))],
+	[sg.T('● Ingrese una palabra:', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4'), sg.InputText(key='textoIngresado'), sg.Submit('Agregar'), sg.Submit('Quitar')],
 	[sg.Multiline(key='dato', size=(70,1), font='Arial', text_color='blue')],
-	[sg.Text('● Nivel de dificultad:     ', text_color='black', font=('Time New Roman', 11),background_color='#80cbc4'), sg.Radio('Sin ayuda ', "RADIO1", default=True, background_color='#80cbc4', key='sinAyuda'), sg.Radio('Mostrar definiciones', "RADIO1", background_color='#80cbc4', key='mosDef'), sg.Radio('Mostrar palabras a buscar', "RADIO1", background_color='#80cbc4', key='mosPal')],
-	[sg.Text('● Orientación de las palabras:     ', text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'), sg.Radio('Horizontal', "RADIO2", default=True, background_color='#80cbc4', key='horizontal'), sg.Radio('Vertical', "RADIO2", background_color='#80cbc4', key='vertical')],
-	[sg.Text('● Elegir colores',text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'), sg.ColorChooserButton('Sustantivos',button_color=('#FFFFFF','#03A9F4')), sg.ColorChooserButton('Adjetivos',button_color=('#FFFFFF','#03A9F4')), sg.ColorChooserButton('Verbos',button_color=('#FFFFFF','#03A9F4'))],
+	[sg.T('● Nivel de dificultad:   ', text_color='black', font=('Time New Roman', 11),background_color='#80cbc4'), sg.Radio('Sin ayuda ', "RADIO1", default=True, background_color='#80cbc4', key='sinAyuda'), sg.Radio('Con definiciones', "RADIO1", background_color='#80cbc4', key='mosDef'), sg.Radio('Mostrando las palabras a buscar', "RADIO1", background_color='#80cbc4', key='mosPal')],
+	[sg.T('● Orientación de las palabras:   ', text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'), sg.Radio('Horizontal', "RADIO2", default=True, background_color='#80cbc4', key='horizontal'), sg.Radio('Vertical', "RADIO2", background_color='#80cbc4', key='vertical')],
+	[sg.T('● Fuente: ', text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'), sg.InputCombo(['Arial', 'Helvetica', 'Calibri', 'Consolas', 'Tahoma', 'Courier', 'Verdana', 'Times', 'Fixedsys', 'Comic,'], size=(20, 20), key='font', readonly=True)],
+	[sg.T('● Tipo: ', text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'),sg.InputCombo(['Mayúscula', 'Minúscula'], size=(20, 20), key='mayOmin', readonly=True)],
+	[sg.T('● Elegir colores',text_color='black', font=('Time New Roman', 10), background_color='#80cbc4'), sg.ColorChooserButton('Sustantivos',button_color=('#FFFFFF','#03A9F4')), sg.ColorChooserButton('Adjetivos',button_color=('#FFFFFF','#03A9F4')), sg.ColorChooserButton('Verbos',button_color=('#FFFFFF','#03A9F4'))],
 	[sg.Submit('Generar sopa de letras'), sg.Cancel('Salir')]
 ]
 window = sg.Window('Seminario de Lenguajes 2019: Python', font=('Arial', 10), background_color='#80cbc4').Layout(layout)
@@ -221,69 +221,72 @@ listaAdjetivos = []
 listaVerbos = []
 listaPalabrasAceptadas = []
 listaPalabras = ()
-listaAyuda= ()
-colores = ()
 definiciones= {}
 
-ayuda=1
 while True:
 	button, values = window.Read()
 	if button == 'Salir':
-		break
-	else:
-		if values['horizontal']:
-			orientacion=True
-		else:
-			orientacion=False
-			
-		if values['mosPal']:
-			ayuda=2
-		elif values['mosDef']:
-			ayuda=3
+		break		
 
-		if button == 'Agregar':			
-			comprobarWikPattern(values['textoIngresado'],listaPalabrasAceptadas,values)
-			mostrar = ', '.join(listaPalabrasAceptadas)
-			window.FindElement('dato').Update(mostrar)
-			window.FindElement('textoIngresado').Update('')
+	if button == 'Agregar':			
+		comprobarWikPattern(values['textoIngresado'], listaPalabrasAceptadas,values)
+		mostrar = ', '.join(listaPalabrasAceptadas)
+		window.FindElement('dato').Update(mostrar)
+		window.FindElement('textoIngresado').Update('')
 		
-		if button == 'Quitar':
-			listaPalabrasAceptadas.remove(values[0])
-			listaSustantivos.remove(values[0])
+	if button == 'Quitar':
+		listaPalabrasAceptadas.remove(values[0])
+		#listaSustantivos.remove(values[0])
 			
-		if button == 'Generar sopa de letras':
-			if len(listaPalabrasAceptadas) == 0:
-				sg.Popup('¡Antes de agregar debe ingresar palabras!')
-			break
-        
-		print('Adjetivos: ', listaAdjetivos)
-		print('Sustantivos: ', listaSustantivos)
-		print('Verbos: ', listaVerbos)
-
-if button != 'Salir':
+	if button == 'Generar sopa de letras':
+		if len(listaPalabrasAceptadas) == 0:
+			sg.Popup('¡Antes de generar la sopa de letras debe ingresar palabras!')
+		else:
+			break	
+    
+if button == 'Salir':
+	sys.exit()
+else:
 	listaPalabras = [listaSustantivos, listaAdjetivos, listaVerbos]
 
-	#   Elección de colores, si no se elije alguno se aplica el color por defecto
-	if (values['Sustantivos']==''):
-		colorS='yellow'
-		#sg.Popup('Como no se agrego un color especifico a los SUSTANTIVOS tendrán su color por defecto: amarillo')
+	if values['horizontal']:
+		orientacion=True
 	else:
-		colorS= values['Sustantivos']  
+		orientacion=False
+			
+	if values['mosPal']:
+		ayuda=2
+	elif values['mosDef']:
+		ayuda=3
+	else:
+		ayuda=1	
 
-	if (values['Adjetivos']==''):
-		colorA= 'red'
-		#sg.Popup('Como no se agrego un color especifico a los ADJETIVOS tendrán su color por defecto: rojo')
-	else:
-		colorA= values['Adjetivos']
+	fuente = values['font']
 
-	if (values['Verbos']==''):
-		colorV='green'
-		#sg.Popup('Como no se agrego un color especifico a los VERBOS tendrán su color por defecto: verde') 
+	if values['mayOmin'] == 'Mayúscula':
+		mayOmin = True
 	else:
-		colorV= values['Verbos']  
+		mayOmin = False
+
+	# Elección de colores, si no se elije alguno se aplica el color por defecto
+	if values['Sustantivos'] == '':
+		colorS = 'orange'
+		sg.Popup('Como no se agrego un color específico a los SUSTANTIVOS tendrá un color por defecto: NARANJA', text_color='orange')
+	else:
+		colorS = values['Sustantivos']  
+
+	if values['Adjetivos'] == '':
+		colorA = 'red'
+		sg.Popup('Como no se agrego un color específico a los ADJETIVOS tendrá un color por defecto: ROJO', text_color='red')
+	else:
+		colorA = values['Adjetivos']
+
+	if values['Verbos'] == '':
+		colorV = 'green'
+		sg.Popup('Como no se agrego un color específico a los VERBOS tendrá un color por defecto: VERDE', text_color='green') 
+	else:
+		colorV = values['Verbos']  
 
 	colores = dict(cSus=colorS, cAdj=colorA, cVer=colorV)
-    
-else:
-	listaPalabras=()
-	colores={}
+	cantPal = [int(values['cantS']), int(values['cantA']), int(values['cantV'])]
+	window.Close()
