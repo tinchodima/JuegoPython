@@ -93,13 +93,13 @@ def clasificacionWiktionary(p,listaPalabras,values):
         else:
             if clasificarPalabraWiktionary(p) == 'NN':
                 listaSustantivos.append(p)
-                listaPalabrasAceptadas.append(p)
+                listaPalabras.append(p)
             elif clasificarPalabraWiktionary(p) == 'JJ':
                 listaSustantivos.append(p)
-                listaPalabrasAceptadas.append(p)
+                listaPalabras.append(p)
             elif clasificarPalabraWiktionary(p) == 'VB':
                 listaSustantivos.append(p)
-                listaPalabrasAceptadas.append(p)
+                listaPalabras.append(p)
             else:
                 print('No se pudo agregar')
             
@@ -113,13 +113,13 @@ def clasificacionPattern(p,listaPalabras):
 		else:
 		    if clasificarPalabraPattern(p) == 'NN':
 			    listaSustantivos.append(p)
-			    listaPalabrasAceptadas.append(p)
+			    listaPalabras.append(p)
 		    elif clasificarPalabraPattern(p) == 'JJ':
 			    listaAdjetivos.append(p)
-			    listaPalabrasAceptadas.append(p)
+			    listaPalabras.append(p)
 		    elif clasificarPalabraPattern(p) == 'VB':
 			    listaVerbos.append(p)
-			    listaPalabrasAceptadas.append(p)
+			    listaPalabras.append(p)
 		    else:
 			    print('No se pudo agregar')
             
@@ -165,7 +165,7 @@ def getDatos():
 	'''
 		Retorna los datos y la configuracion para usar en la sopa de letras
 	'''
-	return listaPalabras
+	return listaPalabrasAceptadas
 
 def getColores():
 	'''
@@ -220,7 +220,7 @@ listaSustantivos = []
 listaAdjetivos = []
 listaVerbos = []
 listaPalabrasAceptadas = []
-listaPalabras = ()
+listaPalabras = []
 definiciones= {}
 
 while True:
@@ -229,17 +229,17 @@ while True:
 		break		
 
 	if button == 'Agregar':			
-		comprobarWikPattern(values['textoIngresado'], listaPalabrasAceptadas,values)
-		mostrar = ', '.join(listaPalabrasAceptadas)
+		comprobarWikPattern(values['textoIngresado'], listaPalabras,values)
+		mostrar = ', '.join(listaPalabras)
 		window.FindElement('dato').Update(mostrar)
 		window.FindElement('textoIngresado').Update('')
 		
 	if button == 'Quitar':
-		listaPalabrasAceptadas.remove(values[0])
+		listaPalabras.remove(values[0])
 		#listaSustantivos.remove(values[0])
 			
 	if button == 'Generar sopa de letras':
-		if len(listaPalabrasAceptadas) == 0:
+		if len(listaPalabras) == 0:
 			sg.Popup('¡Antes de generar la sopa de letras debe ingresar palabras!')
 		else:
 			break	
