@@ -205,7 +205,7 @@ class Digom():
         for i in range(self.n):
             for j in range(self.n):            
                 g.DrawText('{}'.format(self.matriz[i][j], font=(self.tipografia, 15)), (i * BOX_SIZE + 12, j * BOX_SIZE + 12))
-        
+                g.DrawRectangle((i * BOX_SIZE, j * BOX_SIZE), (i * BOX_SIZE+BOX_SIZE, j * BOX_SIZE+BOX_SIZE), line_color='black')
         while True:
             event, values = window.Read()
             if event == 'Salir':
@@ -251,13 +251,14 @@ class Digom():
                 try:  
                     if auxColor != 'white':
                         self.palabraSel.append(self.matriz[y][x])
-                        g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color=auxColor) 
-
+                        g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE, x * BOX_SIZE+BOX_SIZE), fill_color=auxColor) 
+                        g.DrawText('{}'.format(self.matriz[y][x], font=(self.tipografia, 15)), (y * BOX_SIZE + 12, x * BOX_SIZE + 12))
                         if posLetra == True: #Si está ya agregada la posicion de la letra se deseleccionará
                             try:
                                 self.palabraSel.remove(self.matriz[y][x])
                                 self.palabraSel.remove(self.matriz[y][x]) # Se tiene que remover 2 veces (sino remueve mal)
-                                g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE-2, x * BOX_SIZE+BOX_SIZE-2), line_color=self.colorFondo)
+                                g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE, x * BOX_SIZE+BOX_SIZE), fill_color=self.colorFondo)
+                                g.DrawText('{}'.format(self.matriz[y][x], font=(self.tipografia, 15)), (y * BOX_SIZE + 12, x * BOX_SIZE + 12))
                             except(ValueError): #Reiniciar la lista de posiciones guardadas porque no se eligió ninguna letra todavía
                                 self.palabraSel=[] 
                             self.eliminarPos(listaPosiciones, x, y)
@@ -382,8 +383,8 @@ class Digom():
                     self.palabraSel.remove(self.matriz[listaPosiciones[i][1]][listaPosiciones[i][0]])
                 except(ValueError):
                     self.palabraSel=[]    
-                g.DrawRectangle((listaPosiciones[i][1] * BOX_SIZE, listaPosiciones[i][0] * BOX_SIZE), (listaPosiciones[i][1] * BOX_SIZE+BOX_SIZE-2, listaPosiciones[i][0] * BOX_SIZE+BOX_SIZE-2), line_color=self.colorFondo)
-
+                g.DrawRectangle((listaPosiciones[i][1] * BOX_SIZE, listaPosiciones[i][0] * BOX_SIZE), (listaPosiciones[i][1] * BOX_SIZE+BOX_SIZE, listaPosiciones[i][0] * BOX_SIZE+BOX_SIZE), fill_color=self.colorFondo)
+                g.DrawText('{}'.format(self.matriz[listaPosiciones[i][1]][listaPosiciones[i][0]], font=(self.tipografia, 15)), (listaPosiciones[i][1] * BOX_SIZE + 12, listaPosiciones[i][0] * BOX_SIZE + 12))
     # Devuelve una definicion al azar de las palabras ingresadas
     def mostrarDefinicionAlAzar(self):
         pos1=random.randrange(3)
