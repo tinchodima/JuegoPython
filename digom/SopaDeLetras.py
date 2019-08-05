@@ -343,7 +343,7 @@ class Digom():
                 [sg.Multiline('', key='ayudaDef')],
                 [sg.Button('Ayuda')]
                 ]
-            layout[2].append(sg.Frame('Definicion de palabra al azar', definicionPalabra, font='Any 10', title_color='blue', size=(self.n*2, self.n*10), background_color=self.colorFondo))
+            layout[2].append(sg.Frame('Definicion de palabra al azar', definicionPalabra, font=(self.tipografia, 10), title_color='blue', size=(self.n*2, self.n*10), background_color=self.colorFondo))
 
     # Se guarda la posicion de cada letra seleccionada en la matriz y si la posicion ya estaba devuelve true y no la agrega
     def posLetraMatrizMarcada(self, marcada, x, y): 
