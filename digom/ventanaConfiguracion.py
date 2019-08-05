@@ -165,7 +165,7 @@ def getDatos():
 	'''
 		Retorna los datos y la configuracion para usar en la sopa de letras
 	'''
-	return listaPalabrasAceptadas
+	return listaPalabras
 
 def getColores():
 	'''
