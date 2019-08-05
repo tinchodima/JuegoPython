@@ -3,6 +3,7 @@
 # !/usr/bin/python3
 #  -*- coding: utf-8 -*-
 
+import sys
 import random
 import string
 import PySimpleGUI as sg
@@ -14,14 +15,14 @@ class Digom():
         self.colores = vc.getColores()
         self.definiciones = vc.getDefiniciones()
         self.ori = vc.getOri()  
-        self.ayuda = vc.getAyuda()  
+        self.ayuda = vc.getAyuda() 
+        self.tipografia = vc.getFuente() 
+        self.mayOmin = vc.getTipo()
+        self.cantPalAgregar = vc.getCantPal()
         n = self.sacarMax()
         matriz = self.crearMatriz()       
-        self.colorFondo = 'grey' # self.recibirLookAndFeel() LOOK AND FEEL
-        self.tipografia = 'arial' # tipografia= self.recibirTipografia()
-        self.cantPalAgregar = [3,2,1] # cantidadPalabrasAgregar= self.recibirListaCantidad()
+        self.colorFondo = 'white' # LOOK AND FEEL
         self.listaPalabrasAceptadas = {'sus':[],'adj':[],'ver':[]}
-        self.mayOmin = True # mayOmin en true es mayuscula y false en minuscula
         self.palabrasEncontradas = [] # Lista de las palabras encontradas
         self.palabraSel = [] # Lista con la palabra seleccionada
 
@@ -29,16 +30,6 @@ class Digom():
     #listaPalabras[0]= [listaSustantivos, listaAdjetivos, listaVerbos]
     #listaPalabras[0][1]= ["casa", "auto"]
     #listaPalabras[0][1][0]= "casa"     
-
-    '''def recibirTipografia(self):
-        self.tipografia = vc.recibirTipografia()
-        
-    def recibirListaCantidad(self):
-        self.cantPalAgregar= vc.recibirListaCantidad() #lista=[2,3,1] cantidad de palabras a agregar de los sus, adj y ver    
-            
-    def recibirLookAndFeel(self):
-        self.colorFondo= sensor.recibirLookAndFeel()
-        '''
     
     # Saca el número maximo dependiendo de la palabra mas grande
     def sacarMax(self):
@@ -76,7 +67,8 @@ class Digom():
     def meterPalabrasEnMatriz(self):
         listaPalCopia=self._listaPalabras.copy()
         for i in range(3):
-            while self.cantPalAgregar[i] > 0 and len(listaPalCopia[i]) != 0:
+            print(self.cantPalAgregar[i])
+            while self.cantPalAgregar[i] != 0 and len(listaPalCopia[i]) != 0:
                 numRandom = random.randrange(len(listaPalCopia[i]))
                 palabra = listaPalCopia[i][numRandom]
                 listaPalabra= list(listaPalCopia[i][numRandom])
@@ -190,7 +182,6 @@ class Digom():
         auxColor='white' #Si no se elije un tipo de palabra no se pinta nada 
         marcada=[] # Posicion de la letra seleccionada de la matriz (lista que se usa para deseleccionar cuando se vuelve a clickear)
         block=True # Si se elige un tipo de palabra ya no se podra elegir otro hasta que confirme palabra
-        textoDefinicion='soy una definicion de una palabra'
         listaPosiciones=[] # Posiciones elegidas por el usuario en el gráfico
         listaPosicionesNoBorrar=[] # Posiciones que no se deben borrar debido a que el usuario encontró una palabra 
         win=False
@@ -217,15 +208,14 @@ class Digom():
         
         while True:
             event, values = window.Read()
-
             if event == 'Salir':
-                window.Close()
-                break
+                sys.exit()             
             
             # Botones de ayuda
             if event == 'Ayuda' and not win:
                 if self.ayuda == 3:
-                    window.FindElement('ayudaDef').Update(textoDefinicion)
+                    window.FindElement('ayudaDef').Update('')
+                    window.FindElement('ayudaDef').Update(self.mostrarDefinicionAlAzar())
                 elif self.ayuda == 2:
                     window.FindElement('ayudaPal').Update(totalPalabras)
 
@@ -392,19 +382,13 @@ class Digom():
                     self.palabraSel.remove(self.matriz[listaPosiciones[i][1]][listaPosiciones[i][0]])
                 except(ValueError):
                     self.palabraSel=[]    
-                g.DrawRectangle((listaPosiciones[i][1] * BOX_SIZE, listaPosiciones[i][0] * BOX_SIZE), (listaPosiciones[i][1] * BOX_SIZE+BOX_SIZE-2, listaPosiciones[i][0] * BOX_SIZE+BOX_SIZE-2), line_color=self.colorFondo)  
+                g.DrawRectangle((listaPosiciones[i][1] * BOX_SIZE, listaPosiciones[i][0] * BOX_SIZE), (listaPosiciones[i][1] * BOX_SIZE+BOX_SIZE-2, listaPosiciones[i][0] * BOX_SIZE+BOX_SIZE-2), line_color=self.colorFondo)
+    
+    def mostrarDefinicionAlAzar(self):
 
-#------------------------------------------------------------Seccion de Brian Gomez, aqui voy a toquetear tu programa------------------------------------------------------------#     
+        '''Devuelve una definicion al azar en base a las palabras agregadas'''
 
-'''
-def mostrarDefinicionAlAzar(listaPalabras):
-
-		Devuelve una definicion al azar en base a las palabras agregadas
-
-	posL=random.randrage(3)
-	posP=random.randrage(len(listaPalabras[posL]))
-	definicion = listaPalabras[posL][posP]
-	return definicion
-    '''
-
-#------------------------------------------------------------Solo el programa tocare no te ilusiones-----------------------------------------------------------------------------#
+        posL=random.randrage(3)
+        posP=random.randrage(len(listaPalabras[posL]))
+        definicion = self._listaPalabras[posL][posP]
+        return definicion
