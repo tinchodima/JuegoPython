@@ -13,8 +13,7 @@ class Digom():
     def __init__(self):
         self._listaPalabras = vc.getDatos()
         self.colores = vc.getColores()
-        #self.definiciones = vc.getDefiniciones()
-        self.definiciones = [['def 1 sus','def 2 sus', 'def 3 sus'],['def 1 adj','def 2 adj', 'def 3 adj', 'def 4 adj'],['def 1 ver','def 2 ver']]
+        self.definiciones = vc.getDefiniciones()
         self.ori = vc.getOri()
         self.ayuda = vc.getAyuda() 
         self.tipografia = vc.getFuente() 
@@ -387,7 +386,5 @@ class Digom():
                 g.DrawText('{}'.format(self.matriz[listaPosiciones[i][1]][listaPosiciones[i][0]], font=(self.tipografia, 15)), (listaPosiciones[i][1] * BOX_SIZE + 12, listaPosiciones[i][0] * BOX_SIZE + 12))
     # Devuelve una definicion al azar de las palabras ingresadas
     def mostrarDefinicionAlAzar(self):
-        pos1=random.randrange(3)
-        pos2=random.randrange(len(self.definiciones[pos1]))
-        definicion = self.definiciones[pos1][pos2]
-        return definicion
+        key=str(random.choice([k for k in self.definiciones for x in self.definiciones[k]]))
+        return self.definiciones[key] 
