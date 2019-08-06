@@ -7,8 +7,6 @@ from pattern.web import Wiktionary
 from pattern.es import parse,split
 import SopaDeLetras as sdl
 
-#sg.ChangeLookAndFeel('BluePurple')
-
 def clasificarPalabraWiktionary(palabra):		
     w = Wiktionary(language="es")
     a = w.search(palabra)
@@ -25,8 +23,6 @@ def clasificarPalabraWiktionary(palabra):
         elif clasificacion.lower() == "verbo":
             encontre = 'VB'
             return encontre
-        #else:
-            #return 'No se pudo clasificar'
     except(AttributeError):
         return 'No se pudo clasificar'
 
@@ -49,8 +45,6 @@ def clasificarPalabraPattern(palabra):
                 elif i[1] == 'JJ':
                     encontre = 'JJ'
                     return encontre
-                #else:
-                    #return 'No se pudo clasificar'
     except(AttributeError):
         return 'No se pudo clasificar'
 
@@ -171,17 +165,11 @@ def reporteClasificaciones(error):
 	f.close
 
 def obtenerDefinicion(palabra):
-	# ~ w = Wiktionary(language="es")
-	# ~ a = w.search(palabra)
-	# ~ definicion = a.sections[3].content.split('1')[1].split('.2')[0].split('*')[0]
-	# ~ return definicion
 	w = Wiktionary(language="es")
 	a = w.search(palabra)
-	#definicion = a.sections[3].content.split('1')[1].split('.2')[0].split('*')[0]
 	try:
 		definicion = a.sections[3].content.split('1')[1].split('.2')[0].split('*')[0]
 	except(IndexError):
-		# ~ a.sections[3].content.split('1')[0].split('\n')[2] == ' ' or
 		try:
 			definicion = a.sections[3].content.split('1')[0].split('*')[1]
 			if ' ' in definicion[1]:
@@ -194,7 +182,6 @@ def obtenerDefinicion(palabra):
 	except(AttributeError):
 		definicion = sg.Popup('Esta palabra no existe en wiki ni en pattern')
 		msg = 'Clasificacion no encontrada en Wiktionary y Pattern'
-        #reporteClasificaciones(msg)
 		reporteClasificaciones(msg)
 	return definicion
 
@@ -283,7 +270,6 @@ while True:
 		mostrar = ', '.join(listaPalabras)
 		window.FindElement('dato').Update(mostrar)
 		window.FindElement('textoIngresado').Update('')
-		#listaSustantivos.remove(values[0])
 			
 	if button == 'Generar sopa de letras':
 		if len(listaPalabras) == 0:
