@@ -1,11 +1,37 @@
 #Gomez, Brian Agustin
 #Di Maria, Juan Martin
+#! /usr/bin/python3
+# -*- coding: utf-8 -*-
+
+####################################################################################################
+# Copyright 2019 Gomez Brian Agustin, Di Maria Juan Martin
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+# and associated documentation files (the "Software"), to deal in the Software without restriction,
+# including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+# subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all copies or substantial
+# portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+# LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+# EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+# AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+# OR OTHER DEALINGS IN THE SOFTWARE.
+#
+# License URL: https://opensource.org/licenses/mit-license.php
+####################################################################################################
 
 import sys
+import os
 import PySimpleGUI as sg
 from pattern.web import Wiktionary
 from pattern.es import parse,split
 import SopaDeLetras as sdl
+import json
+import statistics
 
 def clasificarPalabraWiktionary(palabra):		
     w = Wiktionary(language="es")
@@ -185,6 +211,33 @@ def obtenerDefinicion(palabra):
 		reporteClasificaciones(msg)
 	return definicion
 
+
+def procesarTemperaturas(oficina):
+    dire = os.path.abspath(os.path.join(os.path.join(os.pardir, 'Raspberry'), 'datos-oficinas.json'))
+    try:    
+    	promedioTemperaturas = {}
+    	oficinas = {}
+    	oficinasJSON = open(dire)
+    	oficinas = json.load(oficinasJSON)
+    	listaTemperaturas = []
+    	for oficina in oficinas:
+    		for temperatura in oficinas[oficina]:
+    			listaTemperaturas.append(int(temperatura['temp']))
+    		promedioTemperaturas[oficina] = statistics.mean(listaTemperaturas)
+    	print(promedioTemperaturas)
+    except(FileNotFoundError):
+    	promedioTemperaturas['none'] = 25   
+    return promedioTemperaturas
+
+def devolverOficinas():
+    dire = os.path.abspath(os.path.join(os.path.join(os.pardir, 'Raspberry'), 'datos-oficinas.json'))
+    oficinas = {}
+    oficinasJSON = open(dire)
+    oficinas = json.load(oficinasJSON)
+    return oficinas
+
+		
+
 def getDatos():
 	'''
 		Retorna los datos y la configuracion para usar en la sopa de letras
@@ -224,6 +277,7 @@ def getTipo():
 def getCantPal():
 	return cantPal	
 
+tempOficinas = devolverOficinas()
 	
 layout = [
 	[sg.T('DIGOM: SOPA DE LETRAS', size=(32, 1), font=('Time New Roman', 20), background_color='#80cbc4')],
@@ -236,6 +290,7 @@ layout = [
 	[sg.T('● Fuente: ', text_color='black', font=('Time New Roman', 12), background_color='#80cbc4'), sg.InputCombo(['Arial', 'Helvetica', 'Calibri', 'Consolas', 'Tahoma', 'Courier', 'Verdana', 'Times', 'Fixedsys'], size=(12, 20), key='font', readonly=True)],
 	[sg.T('● Tipo: ', text_color='black', font=('Time New Roman', 12), background_color='#80cbc4'),sg.InputCombo(['Mayúscula', 'Minúscula'], size=(12, 20), key='mayOmin', readonly=True)],
 	[sg.T('● Elegir colores: ',text_color='black', font=('Time New Roman', 12), background_color='#80cbc4'), sg.ColorChooserButton('Sustantivos',button_color=('#000000','#03A9F4')), sg.ColorChooserButton('Adjetivos',button_color=('#000000','#03A9F4')), sg.ColorChooserButton('Verbos',button_color=('#000000','#03A9F4'))],
+	[sg.Text('Oficina'), sg.InputOptionMenu(values=list(tempOficinas.keys()), key='oficinas')],
 	[sg.Submit('Generar sopa de letras'), sg.Cancel('Salir')]
 ]
 window = sg.Window('Seminario de Lenguajes 2019: Python', font=('Arial', 10), background_color='#80cbc4').Layout(layout)
@@ -247,8 +302,17 @@ listaPalabrasAceptadas = []
 listaPalabras = []
 definiciones= {}
 
+
+
 while True:
 	button, values = window.Read()
+	if procesarTemperaturas[values['oficinas']] < 10:
+		sg.ChangeLookAndFeel('BlueMono')
+	elif (procesarTemperaturas[values['oficinas']] >= 10) and (procesarTemperaturas[values['oficinas']] <= 25):
+		sg.ChangeLookAndFeel('Purple')
+	else:
+		sg.ChangeLookAndFeel('Reds')
+
 	if button == 'Salir':
 		break		
 
