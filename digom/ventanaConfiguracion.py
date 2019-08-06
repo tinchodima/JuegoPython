@@ -25,7 +25,7 @@ def clasificarPalabraWiktionary(palabra):
         elif clasificacion.lower() == "adjetivo" or "forma adjetiva":
             encontre = 'JJ'
             return encontre
-        elif clasificacion.lower() == "verbo":
+        elif clasificacion.lower() == "verbo" or "verbo intransitivo":
             encontre = 'VB'
             return encontre
     except(AttributeError):
@@ -53,8 +53,6 @@ def clasificarPalabraPattern(palabra):
     except(AttributeError):
         return 'No se pudo clasificar'
 
-'''msg = 'Clasificacion no encontrada en Pattern'
-reporteClasificaciones(msg)'''
 
 def comprobarWikPattern2(palabra,listaPalabras,values):
     if (clasificarPalabraWiktionary(palabra) != '9999' and clasificarPalabraPattern(palabra) != '9999') and (clasificarPalabraWiktionary(palabra) == clasificarPalabraPattern(palabra)):
@@ -76,7 +74,7 @@ def comprobarWikPattern2(palabra,listaPalabras,values):
         reporteClasificaciones(msg)
 
 
-def clasificacionWiktionary(p,listaPalabras,values):
+def clasificacionWiktionary(p, listaPalabras,values):
     try:
         if comprobarQueLaPalabraNoEsteAgregada(p,listaPalabras) == False:
             sg.Popup('La palabra ya esta agregada en la sopa de letras')
@@ -88,8 +86,8 @@ def clasificacionWiktionary(p,listaPalabras,values):
                 listaAdjetivos.append(p)
                 listaPalabras.append(p)
             elif clasificarPalabraWiktionary(p) == 'VB':
-                listaVerbos.append(p)
                 listaPalabras.append(p)
+                listaVerbos.append(p)
             else:
                 print('No se pudo agregar')
             
@@ -98,7 +96,7 @@ def clasificacionWiktionary(p,listaPalabras,values):
     except(AttributeError):
     	print('Error de atributo')
 
-def clasificacionPattern(p,listaPalabras):
+def clasificacionPattern(p, listaPalabras):
 	try:
 		if comprobarQueLaPalabraNoEsteAgregada(p,listaPalabras) == False:
 			sg.Popup('La palabra ya esta agregada en la sopa de letras')
@@ -194,7 +192,6 @@ def getCantPal():
 def getColorFondo():
 	return fondo
 
-#-----------------funcion que proveé un promedio de las temperaturas abriendo el json que genera el rasberry-------------------#
 def promedio():
 	dire = os.path.abspath(os.path.join(os.path.join(os.pardir, 'Raspberry'), 'datos-oficinas.json'))
 	#dire = r'C:\Users\Dima\Desktop\datos-oficina.json'
