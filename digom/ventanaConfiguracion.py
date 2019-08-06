@@ -12,18 +12,21 @@ import SopaDeLetras as sdl
 def clasificarPalabraWiktionary(palabra):		
     w = Wiktionary(language="es")
     a = w.search(palabra)
-	
+    encontre = '9999'
     try:	
         clasificacion = a.sections[3].content.split()[0]
 
         if clasificacion.lower() == "sustantivo":
-            return 'NN'
+            encontre = 'NN'
+            return encontre
         elif clasificacion.lower() == "adjetivo" or "forma adjetiva":
-            return 'JJ'
+            encontre = 'JJ'
+            return encontre
         elif clasificacion.lower() == "verbo":
-            return 'VB'
-        else:
-            return 'No se pudo clasificar'
+            encontre = 'VB'
+            return encontre
+        #else:
+            #return 'No se pudo clasificar'
     except(AttributeError):
         return 'No se pudo clasificar'
 
@@ -33,17 +36,21 @@ def clasificarPalabraPattern(palabra):
     (sustantivo, adjetivo o verbo).
     '''
     s = parse(palabra).split()
+    encontre = '9999'
     try:
         for cada in s:
             for i in cada:
                 if i[1] == 'VB':
-                    return 'VB'
+                    encontre = 'VB'
+                    return encontre
                 elif i[1] == 'NN':
-                    return 'NN'
+                    encontre = 'NN'
+                    return encontre
                 elif i[1] == 'JJ':
-                    return 'JJ'
-                else:
-                    return 'No se pudo clasificar'
+                    encontre = 'JJ'
+                    return encontre
+                #else:
+                    #return 'No se pudo clasificar'
     except(AttributeError):
         return 'No se pudo clasificar'
 
@@ -86,6 +93,29 @@ def comprobarWikPattern(palabra,listaPalabras,values):
 		reporteClasificaciones(msg)
 		print('wik3')
 
+def comprobarWikPattern2(palabra,listaPalabras,values):
+    if (clasificarPalabraWiktionary(palabra) != '9999' and clasificarPalabraPattern(palabra) != '9999') and (clasificarPalabraWiktionary(palabra) == clasificarPalabraPattern(palabra)):
+        clasificacionWiktionary(palabra,listaPalabras,values)
+        definiciones[palabra] = obtenerDefinicion(palabra)
+    elif (clasificarPalabraWiktionary(palabra) != '9999' and clasificarPalabraPattern(palabra) != '9999') and (clasificarPalabraWiktionary(palabra) != clasificarPalabraPattern(palabra)):
+        clasificacionWiktionary(palabra,listaPalabras,values) 
+        definiciones[palabra] = obtenerDefinicion(palabra)
+        msg = 'Clasificacion no encontrada en Pattern, se tomara la clasificacion de Wiktionary'
+        reporteClasificaciones(msg)
+    if clasificarPalabraWiktionary(palabra) == '9999' and clasificarPalabraPattern(palabra) != '9999':
+    	clasificacionPattern(palabra,listaPalabras)
+    	sg.Popup('La clasificacion no se encuentra en Wiktionary, ingresar una definicion manualmente')
+    	text = sg.PopupGetText(palabra, 'Ingrese una definicion')
+    	definiciones[palabra] = text
+
+    if clasificarPalabraWiktionary(palabra) == '9999' and clasificarPalabraPattern(palabra) == '9999':
+        msg = 'Clasificacion no encontrada en Wiktionary y Pattern'
+        reporteClasificaciones(msg)
+
+
+
+
+
 def clasificacionWiktionary(p,listaPalabras,values):
     try:
         if comprobarQueLaPalabraNoEsteAgregada(p,listaPalabras) == False:
@@ -105,6 +135,8 @@ def clasificacionWiktionary(p,listaPalabras,values):
             
     except(AttributeError):
         print('No se pudo agregar')
+    except(AttributeError):
+    	print('Error de atributo')
 
 def clasificacionPattern(p,listaPalabras):
 	try:
@@ -159,6 +191,11 @@ def obtenerDefinicion(palabra):
 					definicion = a.sections[3].content.split('1')[0].split('*')[3]
 		except(IndexError):
 				definicion = a.sections[3].content.split('1')[0].split('*')[2]
+	except(AttributeError):
+		definicion = sg.Popup('Esta palabra no existe en wiki ni en pattern')
+		msg = 'Clasificacion no encontrada en Wiktionary y Pattern'
+        #reporteClasificaciones(msg)
+		reporteClasificaciones(msg)
 	return definicion
 
 def getDatos():
@@ -229,21 +266,24 @@ while True:
 		break		
 
 	if button == 'Agregar':			
-		comprobarWikPattern(values['textoIngresado'], listaPalabras,values)
+		comprobarWikPattern2(values['textoIngresado'], listaPalabras,values)
 		mostrar = ', '.join(listaPalabras)
 		window.FindElement('dato').Update(mostrar)
 		window.FindElement('textoIngresado').Update('')
 		
 	if button == 'Quitar':
-<<<<<<< HEAD
 		listaPalabras.remove(values['textoIngresado'])
+		if values['textoIngresado'] in listaSustantivos:
+			listaSustantivos.remove(values['textoIngresado'])
+		elif values['textoIngresado'] in listaAdjetivos:
+			listaAdjetivos.remove(values['textoIngresado'])
+		else:
+			listaVerbos.remove(values['textoIngresado'])
+
 		mostrar = ', '.join(listaPalabras)
 		window.FindElement('dato').Update(mostrar)
 		window.FindElement('textoIngresado').Update('')
 		#listaSustantivos.remove(values[0])
-=======
-		listaPalabras.remove(values[0])
->>>>>>> c09dff657928d037b86248907d02adb8696b0178
 			
 	if button == 'Generar sopa de letras':
 		if len(listaPalabras) == 0:
