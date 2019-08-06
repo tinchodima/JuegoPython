@@ -208,7 +208,7 @@ def promedio():
 		print(promedioTemperaturas)
 	except(FileNotFoundError):
 		promedioTemperaturas[''] = 0
-		sg.PopupNoButtons('No se encontraron oficinas',title='', auto_close_duration=2, auto_close=True)
+		sg.PopupNoButtons('No se encontraron oficinas',title='', auto_close_duration=1, auto_close=True)
 
 	return promedioTemperaturas
 
