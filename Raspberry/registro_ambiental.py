@@ -23,25 +23,25 @@ def temperaturaYhumedad():
  
 def guardarTemperaturas(temp , oficina = 'oficina1'):
     """Funcion encargada de guardar lo leido por el sensor, en el archivo json """
-    if(os.path.exists("arch/datos-oficina.json")):
-        with open("arch/datos-oficina.json", "r") as f:
+    if(os.path.exists("Rasberry/datos-oficina.json")):
+        with open("Rasberry/datos-oficina.json", "r") as f:
             dic_de_temperaturas = json.load(f)
     else:
         dic_de_temperaturas = {}
 
-    #guardamos la nueva temperatura en el diccionario
+    # guardamos la nueva temperatura en el diccionario
     try :
         dic_de_temperaturas[oficina].append(temp)
     except KeyError:
-        #si la oficina no estaba en el diccionario se agrega
+        # si la oficina no estaba en el diccionario se agrega
         dic_de_temperaturas[oficina] = [temp]
 
-    #guardamos en el archivo la nueva temperatura
+    # guardamos en el archivo la nueva temperatura
     with open ("arch/datos-oficina.json", "w") as f:
         json.dump(dic_de_temperaturas, f, indent=4)
 
 while True:
-    print('Guardando en json...')
+    print('Guardando en json')
     temp = temperaturaYhumedad()
     guardarTemperaturas(temp)
     time.sleep(60)  # Espera 1 min
