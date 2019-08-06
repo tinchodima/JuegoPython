@@ -3,27 +3,6 @@
 #! /usr/bin/python3
 # -*- coding: utf-8 -*-
 
-####################################################################################################
-# Copyright 2019 Gomez Brian Agustin, Di Maria Juan Martin
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy of this software
-# and associated documentation files (the "Software"), to deal in the Software without restriction,
-# including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
-# and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
-# subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all copies or substantial
-# portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
-# LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
-# EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
-# AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
-# OR OTHER DEALINGS IN THE SOFTWARE.
-#
-# License URL: https://opensource.org/licenses/mit-license.php
-####################################################################################################
-
 import sys
 import os
 import PySimpleGUI as sg
@@ -74,44 +53,8 @@ def clasificarPalabraPattern(palabra):
     except(AttributeError):
         return 'No se pudo clasificar'
 
-def comprobarWikPattern(palabra,listaPalabras,values):
-	if clasificarPalabraPattern(palabra) == clasificarPalabraWiktionary(palabra) and clasificarPalabraPattern(palabra) != 'No se pudo clasificar':
-		clasificacionWiktionary(palabra,listaPalabras,values)
-		definiciones[palabra] = obtenerDefinicion(palabra)
-		print('wik1')
-	elif clasificarPalabraWiktionary(palabra) == 'No se pudo clasificar' and clasificarPalabraPattern(palabra) == 'No se pudo clasificar':
-		#informar en un reporte que la clasificacion no existe ni en wik ni en pattern
-		msg = 'Clasificacion no encontrada en Wiktionary y Pattern'
-		reporteClasificaciones(msg)
-		print('ninguno')
-	elif clasificarPalabraWiktionary(palabra) != clasificarPalabraPattern(palabra) and clasificarPalabraWiktionary(palabra) != 'No se pudo clasificar':
-		clasificacionPattern(palabra,listaPalabras)
-		print('pattern1')
-		sg.Popup('La clasificacion no se encuentra en Wiktionary, ingresar una definicion manualmente')
-		text = sg.PopupGetText(palabra, 'Ingrese una definicion')
-		definiciones[palabra] = text
-		#pedir que ingrese una definicion
-	elif clasificarPalabraWiktionary(palabra) != clasificarPalabraPattern(palabra) and clasificarPalabraWiktionary(palabra) != 'No se pudo clasificar' and clasificarPalabraPattern(palabra) != 'No se pudo clasificar':
-		clasificacionPattern(palabra,listaPalabras)
-		print('pattern2')
-		sg.Popup('La clasificacion no se encuentra en Wiktionary, ingresar una definicion manualmente')
-		text = sg.PopupGetText(palabra, 'Ingrese una definicion')
-		definiciones[palabra] = text
-		#pedir que ingrese una definicion
-	elif clasificarPalabraPattern(palabra) != clasificarPalabraWiktionary(palabra) and clasificarPalabraPattern(palabra) != 'No se pudo clasificar':
-		#informar en un reporte que la clasificacion no existe en pattern
-		clasificacionWiktionary(palabra,listaPalabras,values)
-		definiciones[palabra] = obtenerDefinicion(palabra)
-		msg = 'Clasificacion no encontrada en Pattern'
-		reporteClasificaciones(msg)
-		print('wik2')
-	elif clasificarPalabraPattern(palabra) != clasificarPalabraWiktionary(palabra) and clasificarPalabraPattern(palabra) != 'No se pudo clasificar' and clasificarPalabraWiktionary(palabra) != 'No se pudo clasificar':
-		#informar en un reporte que la clasificacion no existe en pattern
-		clasificacionWiktionary(palabra,listaPalabras,values)
-		definiciones[palabra] = obtenerDefinicion(palabra)
-		msg = 'Clasificacion no encontrada en Pattern'
-		reporteClasificaciones(msg)
-		print('wik3')
+'''msg = 'Clasificacion no encontrada en Pattern'
+reporteClasificaciones(msg)'''
 
 def comprobarWikPattern2(palabra,listaPalabras,values):
     if (clasificarPalabraWiktionary(palabra) != '9999' and clasificarPalabraPattern(palabra) != '9999') and (clasificarPalabraWiktionary(palabra) == clasificarPalabraPattern(palabra)):
@@ -131,9 +74,6 @@ def comprobarWikPattern2(palabra,listaPalabras,values):
     if clasificarPalabraWiktionary(palabra) == '9999' and clasificarPalabraPattern(palabra) == '9999':
         msg = 'Clasificacion no encontrada en Wiktionary y Pattern'
         reporteClasificaciones(msg)
-
-
-
 
 
 def clasificacionWiktionary(p,listaPalabras,values):
@@ -210,32 +150,6 @@ def obtenerDefinicion(palabra):
 		msg = 'Clasificacion no encontrada en Wiktionary y Pattern'
 		reporteClasificaciones(msg)
 	return definicion
-
-
-def procesarTemperaturas(oficina):
-    dire = os.path.abspath(os.path.join(os.path.join(os.pardir, 'Raspberry'), 'datos-oficinas.json'))
-    try:    
-    	promedioTemperaturas = {}
-    	oficinas = {}
-    	oficinasJSON = open(dire)
-    	oficinas = json.load(oficinasJSON)
-    	listaTemperaturas = []
-    	for oficina in oficinas:
-    		for temperatura in oficinas[oficina]:
-    			listaTemperaturas.append(int(temperatura['temp']))
-    		promedioTemperaturas[oficina] = statistics.mean(listaTemperaturas)
-    	print(promedioTemperaturas)
-    except(FileNotFoundError):
-    	promedioTemperaturas['none'] = 25   
-    return promedioTemperaturas
-
-def devolverOficinas():
-    dire = os.path.abspath(os.path.join(os.path.join(os.pardir, 'Raspberry'), 'datos-oficinas.json'))
-    oficinas = {}
-    oficinasJSON = open(dire)
-    oficinas = json.load(oficinasJSON)
-    return oficinas
-
 		
 
 def getDatos():
@@ -275,10 +189,33 @@ def getTipo():
 	return mayOmin
 
 def getCantPal():
-	return cantPal	
+	return cantPal
 
-tempOficinas = devolverOficinas()
-	
+def getColorFondo():
+	return fondo
+
+#-----------------funcion que proveé un promedio de las temperaturas abriendo el json que genera el rasberry-------------------#
+def promedio():
+	dire = os.path.abspath(os.path.join(os.path.join(os.pardir, 'Raspberry'), 'datos-oficinas.json'))
+	#dire = r'C:\Users\Dima\Desktop\datos-oficina.json'
+	try:    
+		promedioTemperaturas = {}
+		oficinas = {}
+		oficinasJSON = open(dire)
+		oficinas = json.load(oficinasJSON)
+		listaTemperaturas = []
+		for oficina in oficinas:
+			for temperatura in oficinas[oficina]:
+				listaTemperaturas.append(int(temperatura['temp']))
+			promedioTemperaturas[oficina] = statistics.mean(listaTemperaturas)
+		print(promedioTemperaturas)
+	except(FileNotFoundError):
+		promedioTemperaturas[''] = 0
+		sg.PopupNoButtons('No se encontraron oficinas',title='', auto_close_duration=2, auto_close=True)
+
+	return promedioTemperaturas
+
+
 layout = [
 	[sg.T('DIGOM: SOPA DE LETRAS', size=(32, 1), font=('Time New Roman', 20), background_color='#80cbc4')],
 	[sg.T('● Cantidad de palabras que se van a ingresar a la sopa de letras', text_color='black',font=('Time New Roman', 12), background_color='#80cbc4')],
@@ -289,8 +226,8 @@ layout = [
 	[sg.T('● Orientación de las palabras:   ', text_color='black', font=('Time New Roman', 12), background_color='#80cbc4'), sg.Radio('Horizontal', "RADIO2", default=True, background_color='#80cbc4', key='horizontal'), sg.Radio('Vertical', "RADIO2", background_color='#80cbc4', key='vertical')],
 	[sg.T('● Fuente: ', text_color='black', font=('Time New Roman', 12), background_color='#80cbc4'), sg.InputCombo(['Arial', 'Helvetica', 'Calibri', 'Consolas', 'Tahoma', 'Courier', 'Verdana', 'Times', 'Fixedsys'], size=(12, 20), key='font', readonly=True)],
 	[sg.T('● Tipo: ', text_color='black', font=('Time New Roman', 12), background_color='#80cbc4'),sg.InputCombo(['Mayúscula', 'Minúscula'], size=(12, 20), key='mayOmin', readonly=True)],
+	[sg.T('● Oficina', background_color='#80cbc4', font=('Time New Roman', 12)), sg.InputCombo(values=list(promedio().keys()), key='oficinas', readonly=True)],
 	[sg.T('● Elegir colores: ',text_color='black', font=('Time New Roman', 12), background_color='#80cbc4'), sg.ColorChooserButton('Sustantivos',button_color=('#000000','#03A9F4')), sg.ColorChooserButton('Adjetivos',button_color=('#000000','#03A9F4')), sg.ColorChooserButton('Verbos',button_color=('#000000','#03A9F4'))],
-	[sg.Text('Oficina'), sg.InputOptionMenu(values=list(tempOficinas.keys()), key='oficinas')],
 	[sg.Submit('Generar sopa de letras'), sg.Cancel('Salir')]
 ]
 window = sg.Window('Seminario de Lenguajes 2019: Python', font=('Arial', 10), background_color='#80cbc4').Layout(layout)
@@ -302,16 +239,8 @@ listaPalabrasAceptadas = []
 listaPalabras = []
 definiciones= {}
 
-
-
 while True:
 	button, values = window.Read()
-	if procesarTemperaturas[values['oficinas']] < 10:
-		sg.ChangeLookAndFeel('BlueMono')
-	elif (procesarTemperaturas[values['oficinas']] >= 10) and (procesarTemperaturas[values['oficinas']] <= 25):
-		sg.ChangeLookAndFeel('Purple')
-	else:
-		sg.ChangeLookAndFeel('Reds')
 
 	if button == 'Salir':
 		break		
@@ -345,7 +274,20 @@ while True:
     
 if button == 'Salir':
 	sys.exit()
-else:	
+else:
+	# Manda el color del fondo que obtendrá la sopa de letras dependiendo del promedio de temperaturas sacado	
+	promedioTemperaturas=promedio()
+	if promedioTemperaturas[values['oficinas']] == 0:
+		fondo = 'white'	
+	elif promedioTemperaturas[values['oficinas']] < 10:
+		fondo = 'blue'
+	elif promedioTemperaturas[values['oficinas']] >= 10 and promedioTemperaturas[values['oficinas']] <= 20:
+		fondo = 'violet'
+	elif promedioTemperaturas[values['oficinas']] >= 20 and promedioTemperaturas[values['oficinas']] <= 28:	
+		fondo = 'orange'
+	else:
+		fondo = 'red'
+
 	listaPalabras = [listaSustantivos, listaAdjetivos, listaVerbos]
 
 	if values['horizontal']:
@@ -369,14 +311,14 @@ else:
 
 	# Elección de colores, si no se elije alguno se aplica el color por defecto
 	if values['Sustantivos'] == '':
-		colorS = 'orange'
-		sg.Popup('Como no se agrego un color específico a los SUSTANTIVOS tendrá un color por defecto: NARANJA', text_color='orange')
+		colorS = 'pink'
+		sg.Popup('Como no se agrego un color específico a los SUSTANTIVOS tendrá un color por defecto: ROSA', text_color='pink')
 	else:
 		colorS = values['Sustantivos']  
 
 	if values['Adjetivos'] == '':
-		colorA = 'red'
-		sg.Popup('Como no se agrego un color específico a los ADJETIVOS tendrá un color por defecto: ROJO', text_color='red')
+		colorA = 'purple'
+		sg.Popup('Como no se agrego un color específico a los ADJETIVOS tendrá un color por defecto: VIOLETA', text_color='purple')
 	else:
 		colorA = values['Adjetivos']
 

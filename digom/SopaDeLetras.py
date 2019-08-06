@@ -3,27 +3,6 @@
 # !/usr/bin/python3
 #  -*- coding: utf-8 -*-
 
-####################################################################################################
-# Copyright 2019 Gomez Brian Agustin, Di Maria Juan Martin
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy of this software
-# and associated documentation files (the "Software"), to deal in the Software without restriction,
-# including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
-# and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
-# subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all copies or substantial
-# portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
-# LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
-# EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
-# AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
-# OR OTHER DEALINGS IN THE SOFTWARE.
-#
-# License URL: https://opensource.org/licenses/mit-license.php
-####################################################################################################
-
 import sys
 import random
 import string
@@ -42,7 +21,7 @@ class Digom():
         self.cantPalAgregar = vc.getCantPal()
         n = self.sacarMax()
         matriz = self.crearMatriz()       
-        self.colorFondo = 'white' # LOOK AND FEEL
+        self.colorFondo = vc.getColorFondo()
         self.listaPalabrasAceptadas = {'sus':[],'adj':[],'ver':[]}
         self.palabrasEncontradas = [] # Lista de las palabras encontradas
         self.palabraSel = [] # Lista con la palabra seleccionada
@@ -197,7 +176,7 @@ class Digom():
         layout = [
         [sg.T('DIGOM: Sopa de letras', font=(self.tipografia, 15), text_color='blue', background_color=self.colorFondo)],
         [sg.T('Sustantivos: '+str(len(self.listaPalabrasAceptadas['sus']))+'  -', text_color='blue', background_color=self.colorFondo, font=(self.tipografia,10)),sg.T('Adjetivos: '+str(len(self.listaPalabrasAceptadas['adj']))+'  -', text_color='blue', background_color=self.colorFondo, font=(self.tipografia,10)), sg.T('Verbos: '+str(len(self.listaPalabrasAceptadas['ver'])), text_color='blue', background_color=self.colorFondo, font=(self.tipografia,10))],
-        [sg.Graph((self.n*30, self.n*30), (-2, self.n*22.5), (self.n*22.5, -2), key='Graph', change_submits=True, drag_submits=False, background_color=self.colorFondo)],
+        [sg.Graph((self.n*30, self.n*30), (-2, self.n*22.5), (self.n*22.5, -2), key='Graph', change_submits=True, drag_submits=False, background_color='white')],
         [sg.T('Elegir un tipo de letra', text_color='blue', background_color=self.colorFondo, font=(self.tipografia,10)), sg.Button('Sustantivo', button_color=('black', self.colores['cSus'])), sg.Button('Adjetivo', button_color=('black', self.colores['cAdj'])), sg.Button('Verbo', button_color=('black', self.colores['cVer']))],
         [sg.Button('Comprobar Palabra'), sg.Button('Salir')]
         ]
@@ -262,7 +241,7 @@ class Digom():
                             try:
                                 self.palabraSel.remove(self.matriz[y][x])
                                 self.palabraSel.remove(self.matriz[y][x]) # Se tiene que remover 2 veces (sino remueve mal)
-                                g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE, x * BOX_SIZE+BOX_SIZE), fill_color=self.colorFondo)
+                                g.DrawRectangle((y * BOX_SIZE, x * BOX_SIZE), (y * BOX_SIZE+BOX_SIZE, x * BOX_SIZE+BOX_SIZE), fill_color='white')
                                 g.DrawText('{}'.format(self.matriz[y][x], font=(self.tipografia, 15)), (y * BOX_SIZE + 12, x * BOX_SIZE + 12))
                             except(ValueError): #Reiniciar la lista de posiciones guardadas porque no se eligió ninguna letra todavía
                                 self.palabraSel=[] 
@@ -388,7 +367,7 @@ class Digom():
                     self.palabraSel.remove(self.matriz[listaPosiciones[i][1]][listaPosiciones[i][0]])
                 except(ValueError):
                     self.palabraSel=[]    
-                g.DrawRectangle((listaPosiciones[i][1] * BOX_SIZE, listaPosiciones[i][0] * BOX_SIZE), (listaPosiciones[i][1] * BOX_SIZE+BOX_SIZE, listaPosiciones[i][0] * BOX_SIZE+BOX_SIZE), fill_color=self.colorFondo)
+                g.DrawRectangle((listaPosiciones[i][1] * BOX_SIZE, listaPosiciones[i][0] * BOX_SIZE), (listaPosiciones[i][1] * BOX_SIZE+BOX_SIZE, listaPosiciones[i][0] * BOX_SIZE+BOX_SIZE), fill_color='white')
                 g.DrawText('{}'.format(self.matriz[listaPosiciones[i][1]][listaPosiciones[i][0]], font=(self.tipografia, 15)), (listaPosiciones[i][1] * BOX_SIZE + 12, listaPosiciones[i][0] * BOX_SIZE + 12))
     # Devuelve una definicion al azar de las palabras ingresadas
     def mostrarDefinicionAlAzar(self):
