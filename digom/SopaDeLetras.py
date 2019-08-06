@@ -41,7 +41,7 @@ class Digom():
                     num=len(palabra)
                     if num >= max:
                         max=num
-            self.n=max+1
+            self.n=max + len(self._listaPalabras)
         else:
             self.n=0
 
@@ -80,7 +80,10 @@ class Digom():
                     self.meterPalabraVerticalmente(listaPalabra, self._listaPalabras[i])
             
                 self.cantPalAgregar[i] = self.cantPalAgregar[i] -1
-                listaPalCopia[i].pop(numRandom)
+                try:
+                    listaPalCopia[i].pop(numRandom)
+                except(IndexError):
+                    print('no se encuentra')    
 
     # La palabra ingresada se agrega en un diccionario con su tipo
     def aceptarPalabra(self, i, palabra):            
@@ -93,27 +96,27 @@ class Digom():
 
     # La palabra se ingresara verticalmente
     def meterPalabraHorizontalmente(self, palabra, listaPalabras):
-        ok=False #El ok determina si la palabra fue escrita en la sopa de letras
+        ok=False # El ok determina si la palabra fue escrita en la sopa de letras
         x=random.randrange(self.n)
         y=random.randrange(self.n)
         cont=0
-        while True: #Tratará de ingresar la palabra sin que se "choque" con otra
-            while True: #si la longitud de la palabra + el random "y" superan la altura de la matriz se volverá a seleccionar otro numero random hasta que la palabra entre
+        while True: # Tratará de ingresar la palabra sin que se "choque" con otra
+            while True: # Si la longitud de la palabra + el random "y" superan la altura de la matriz se volverá a seleccionar otro numero random hasta que la palabra entre
                 lon=len(palabra)
                 if lon+x >= self.n or self.matriz[x][y] != "*":
                     x=random.randrange(self.n)
                     y=random.randrange(self.n)
-                else: #La palabra entra en la matriz
+                else: # La palabra entra en la matriz
                     break
             auxX=x
             auxY=y        
             i=0
-            for p in palabra: #se fija que todos los espacios esten disponibles para escribir la palabra ("i" tiene que ser igual a la longitud de la palabra)
+            for p in palabra: # Se fija que todos los espacios esten disponibles para escribir la palabra ("i" tiene que ser igual a la longitud de la palabra)
                 letra= self.matriz[x][y]
                 if letra == "*":                 
                     x=x+1
                     i=i+1
-            if lon == i: #Si todos los espacios tienen "*" entonces se procederá a escribir la palabra
+            if lon == i: # Si todos los espacios tienen "*" entonces se procederá a escribir la palabra
                 for p in palabra:
                     if self.mayOmin:                       
                         self.matriz[auxX][auxY]= str(p.upper())
@@ -121,17 +124,8 @@ class Digom():
                         self.matriz[auxX][auxY]= str(p.lower())   
                     auxX+=1
                 ok=True   
-            if ok == True: #Si ok = True significa que la palabra fue agregada, sino tendrá que buscar nuevas coordenadas
-                break 
-            elif cont==5: #Si en 5 oportunidades la palabra no se pudo agregar no se agregará y se informará
-                pal=''
-                for element in palabra: # pal se queda con la palabra en forma de string (palabra es una lista) para poder imprimirla
-                    pal=pal+element
-                sg.Popup('No se pudo agregar la palabra '+pal.upper())
-                listaPalabras.remove(pal)
+            if ok == True: # Si ok = True significa que la palabra fue agregada, sino tendrá que buscar nuevas coordenadas
                 break
-            else:
-                cont+=1
 
     # La palabra se ingresara verticalmente
     def meterPalabraVerticalmente(self, palabra, listaPalabras):
@@ -164,16 +158,7 @@ class Digom():
                     auxY+=1
                 ok=True   
             if ok == True: #Si ok = True significa que la palabra fue agregada, sino tendrá que buscar nuevas coordenadas
-                break 
-            elif cont==5: #Si en 5 oportunidades la palabra no se pudo agregar no se agregará y se informará
-                pal=''
-                for element in palabra: # pal se queda con la palabra en forma de string (palabra es una lista) para poder imprimirla
-                    pal=pal+element
-                sg.Popup('No se pudo agregar la palabra '+pal.upper())
-                listaPalabras.remove(pal)
                 break
-            else:
-                cont+=1
 
 
     # Método que crea el gráfico
