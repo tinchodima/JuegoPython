@@ -372,9 +372,4 @@ else:
     cantPal = [int(values['cantS']), int(
         values['cantA']), int(values['cantV'])]
 
-    print(cantPal)
-    print(listaVerbos)
-    print(listaPalabras)
-    print(listaPalabrasAceptadas)
-
     window.Close()
